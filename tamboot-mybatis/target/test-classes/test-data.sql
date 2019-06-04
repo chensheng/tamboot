@@ -1,2 +1,0 @@
-insert into user_info (id, version, create_time, creator, modify_time, modifier, username, password) values (1, 0, PARSEDATETIME('2018-07-09 00:00:00', 'yyyy-MM-dd hh:mm:ss', 'en'), 1, PARSEDATETIME('2018-07-09 00:00:00', 'yyyy-MM-dd hh:mm:ss', 'en'), 1, 'chensheng', '123456');
-insert into user_info (id, version, create_time, creator, modify_time, modifier, username, password) values (2, 0, PARSEDATETIME('2018-07-09 00:00:00', 'yyyy-MM-dd hh:mm:ss', 'en'), 2, PARSEDATETIME('2018-07-09 00:00:00', 'yyyy-MM-dd hh:mm:ss', 'en'), 2, 'chensheng2', '123456');

@@ -1,4 +1,0 @@
--------------------------------------------------------------------------------
-Test set: com.tamboot.web.test.TambootWebTests
--------------------------------------------------------------------------------
-Tests run: 9, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 4.941 s - in com.tamboot.web.test.TambootWebTests
