@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tamboot.sample.mapper.SystemUserMapper">
+    <resultMap type="com.tamboot.sample.model.SystemUserModel" id="Model"></resultMap>
+
+    <select id="selectOneById" resultMap="Model">
+        select * from system_user where id = #{id}
+    </select>
+    
+    <select id="selectOneByUsername" resultMap="Model">
+        select
+            id,
+            username,
+            password,
+            status,
+            roles
+        from system_user
+        where username = #{username}
+        limit 0,1
+    </select>
+
+    <update id="updateById">
+        update system_user
+            <set>
+                <if test="@com.tamboot.common.utils.StringUtils@isNotEmpty(password)">password = #{password},</if>
+                <if test="@com.tamboot.common.utils.StringUtils@isNotEmpty(roles)">roles = #{roles},</if>
+                <if test="status != null">status = #{status}</if>
+            </set>
+        where id = #{id}
+    </update>
+</mapper>

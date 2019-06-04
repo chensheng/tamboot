@@ -1,0 +1,16 @@
+com\tamboot\webapp\mybatis\ModifyInfoUpdateStrategy.class
+com\tamboot\webapp\core\PageAdapter.class
+com\tamboot\webapp\core\JsonResponseWriter.class
+com\tamboot\webapp\security\JsonResponseAccessDeniedHandler.class
+com\tamboot\webapp\core\BaseModel.class
+com\tamboot\webapp\mybatis\CreateInfoInsertStrategy.class
+com\tamboot\webapp\security\JsonResponseAuthenticationEntryPoint.class
+com\tamboot\webapp\security\JsonResponseAuthenticationSuccessHandler.class
+com\tamboot\webapp\core\ResponseEntity.class
+com\tamboot\webapp\core\PageResponseBodyDecorator.class
+com\tamboot\webapp\core\RedisNamespace.class
+com\tamboot\webapp\security\JsonResponseAuthenticationFailureHandler.class
+com\tamboot\webapp\security\RedisRoleBasedPermissionRepository.class
+com\tamboot\webapp\security\RedisTokenRepository.class
+com\tamboot\webapp\config\TambootWebappAutoConfiguration.class
+com\tamboot\webapp\core\ResponseType.class

@@ -1,0 +1,7 @@
+# Auto Configure
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+com.tamboot.rocketmq.config.TambootRocketMQAutoConfiguration
+
+org.springframework.context.ApplicationListener=\
+com.tamboot.rocketmq.core.RocketMQInitializer,\
+com.tamboot.rocketmq.core.RocketMQShutdownHook

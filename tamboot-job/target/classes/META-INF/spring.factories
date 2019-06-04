@@ -1,0 +1,6 @@
+# Auto Configure
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+com.tamboot.job.config.TambootJobAutoConfiguration
+
+org.springframework.context.ApplicationListener=\
+com.tamboot.job.core.JobInitializer

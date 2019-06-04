@@ -1,0 +1,16 @@
+com\tamboot\security\test\custom\CustomUserDetailsService.class
+com\tamboot\security\test\custom\CustomTokenRepository.class
+com\tamboot\security\test\custom\CustomPasswordEncoder.class
+com\tamboot\security\test\custom\CustomAuthenticationSuccessHandler.class
+com\tamboot\security\test\custom\CustomConfig.class
+com\tamboot\security\test\custom\CustomRoleBasedPermissionRepository.class
+com\tamboot\security\test\basic\DefaultTambootSecurityTests.class
+com\tamboot\security\test\TestApp.class
+com\tamboot\security\test\AdminController.class
+com\tamboot\security\test\UserController.class
+com\tamboot\security\test\custom\CustomAccessDeniedHandler.class
+com\tamboot\security\test\custom\CustomAuthenticationEntryPoint.class
+com\tamboot\security\test\custom\CustomAuthenticationFailureHandler.class
+com\tamboot\security\test\custom\CustomTambootSecurityTests.class
+com\tamboot\security\test\ManagerController.class
+com\tamboot\security\test\AnonymousController.class

@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: com.tamboot.security.test.custom.CustomTambootSecurityTests
+-------------------------------------------------------------------------------
+Tests run: 13, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.525 s - in com.tamboot.security.test.custom.CustomTambootSecurityTests

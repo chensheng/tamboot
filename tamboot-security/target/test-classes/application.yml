@@ -1,0 +1,17 @@
+spring:
+  security:
+    loginPath: /login
+    ignoringAntMatchers:
+      - /anonymous/**
+    user:
+      name: user
+      password: tamboot123456
+      roles:
+        - USER
+    roleBasedPermissions:
+      - urlAntPattern: /**
+        roles: ADMIN,USER
+      - urlAntPattern: /user/**
+        roles: ADMIN,USER
+      - urlAntPattern: /admin/**
+        roles: ADMIN

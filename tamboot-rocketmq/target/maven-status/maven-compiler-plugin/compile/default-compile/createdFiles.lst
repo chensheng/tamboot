@@ -1,0 +1,12 @@
+com\tamboot\rocketmq\core\RocketMQMessageListenerContainer.class
+com\tamboot\rocketmq\core\RocketMQConsumerRegistry.class
+com\tamboot\rocketmq\core\SimpleMQProducer.class
+com\tamboot\rocketmq\annotation\RocketMQConsumer.class
+com\tamboot\rocketmq\config\TambootRocketMQAutoConfiguration.class
+com\tamboot\rocketmq\core\SelectorType.class
+com\tamboot\rocketmq\core\RocketMQShutdownHook.class
+com\tamboot\rocketmq\core\RocketMQAppContextHolder.class
+com\tamboot\rocketmq\core\RocketMQInitializer.class
+com\tamboot\rocketmq\core\RocketMQConsumerLifecycleListener.class
+com\tamboot\rocketmq\config\TambootRocketMQProperties$Producer.class
+com\tamboot\rocketmq\config\TambootRocketMQProperties.class

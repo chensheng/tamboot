@@ -1,0 +1,15 @@
+com\tamboot\mybatis\test\DeleteTest.class
+com\tamboot\mybatis\test\VersionLockTest.class
+com\tamboot\mybatis\test\DataSourceTest.class
+com\tamboot\mybatis\test\UpdateTest.class
+com\tamboot\mybatis\test\strategy\TestInsertStrategy.class
+com\tamboot\mybatis\test\mapper\UserInfoMapper.class
+com\tamboot\mybatis\test\TestApp.class
+com\tamboot\mybatis\test\model\UserInfoModel.class
+com\tamboot\mybatis\test\TransactionTest.class
+com\tamboot\mybatis\test\DataSourceConfig.class
+com\tamboot\mybatis\test\service\TransactionService.class
+com\tamboot\mybatis\test\InsertTest.class
+com\tamboot\mybatis\test\strategy\TestUpdateStrategy.class
+com\tamboot\mybatis\test\service\impl\TransactionServiceImpl.class
+com\tamboot\mybatis\test\QueryTest.class
