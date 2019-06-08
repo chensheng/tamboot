@@ -40,6 +40,7 @@
         <servlet-api.version>3.1.0</servlet-api.version>
         <spring-security-test.version>5.1.5.RELEASE</spring-security-test.version>
         <rocketmq.version>4.2.0</rocketmq.version>
+        <hikaricp.version>3.3.1</hikaricp.version>
     </properties>
 
     <dependencyManagement>
@@ -93,6 +94,11 @@
                 <groupId>org.apache.rocketmq</groupId>
                 <artifactId>rocketmq-client</artifactId>
                 <version>${rocketmq.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.zaxxer</groupId>
+                <artifactId>HikariCP</artifactId>
+                <version>${hikaricp.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
