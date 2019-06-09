@@ -286,7 +286,7 @@ public class UpdateInterceptor implements Interceptor {
             return columnAndFieldMap;
         }
         
-        String[] columnAndFieldArr = updateConfig.columnAndFiedMapping();
+        String[] columnAndFieldArr = updateConfig.columnAndFieldMapping();
         if (columnAndFieldArr != null && columnAndFieldArr.length > 0 && columnAndFieldArr.length % 2 == 0) {
             for (int i = 1; i < columnAndFieldArr.length; i+=2) {
                 String columnName = columnAndFieldArr[i - 1].toUpperCase();

@@ -39,6 +39,6 @@ public @interface InsertConfig {
      * Database column name and insert model field name mapping. Such as {"USER_NAME", "userName"}.
      * @return
      */
-    String[] columnAndFiedMapping() default "";
+    String[] columnAndFieldMapping() default "";
     
 }
