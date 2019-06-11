@@ -90,7 +90,7 @@ public class DatabaseUserDetailsService implements UserDetailsService {
 ###### AccessDeniedHandler扩展
 当用户访问没有权限访问的地址时，系统就会调用`AccessDeniedHandler`，默认实现是`AccessDeniedHandlerImpl`，直接返回403 Forbidden错误。开发者可以实现自己的`AccessDeniedHandler`来进行特定的逻辑处理，比如返回用户无权限的json格式数据。具体的实现可参考`tamboot-webapp`模块的`JsonResponseAccessDeniedHandler`。
 
-##### TambootAuthenticationService扩展
+###### TambootAuthenticationService扩展
 `TambootAuthenticationService`提供了`login`和`logout`，开发者可使用这两个方法实现自定义的登录、登出接口，比如实现微信公众号的授权登录。下面是一段微信公众号授权登录的伪代码。
 ```java
 @Service
@@ -127,3 +127,6 @@ public class WxmpServiceImpl implements WxmpService {
 	}
 }
 ```
+
+### tamboot-webapp
+该模块基于`tamboot-mybatis`、`tamboot-web`、`tamboot-security`的扩展点，实现了统一接口返回格式、基于redis的security信息存储、数据库通用字段自动处理等功能。开发者可基于该模块快速搭建系统，[Tamboot Admin](https://github.com/chensheng/tamboot-admin-back)就是基于该模块搭建的企业应用脚手架项目。
