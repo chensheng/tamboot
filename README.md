@@ -60,7 +60,6 @@ public class DatabaseUserDetailsService implements UserDetailsService {
     @Autowired
     private SystemRoleService systemRoleService;
 
-
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         SystemUserModel user = systemUserService.findByUsername(username);
@@ -76,5 +75,55 @@ public class DatabaseUserDetailsService implements UserDetailsService {
                 .roles(roles)
                 .build();
     }
+}
+```
+
+###### AuthenticationSuccessHandler扩展
+使用`通用登录`进行登录时，如果登录成功，则会调用`AuthenticationSuccessHandler`，默认实现是`SavedRequestAwareAuthenticationSuccessHandler`，直接重定向到`/`根目录。开发者可以实现自己的handler来进行特定的逻辑处理，比如返回登录成功的json格式数据。具体的实现可参考`tamboot-webapp`模块的`JsonResponseAuthenticationSuccessHandler`。
+
+###### AuthenticationFailureHandler扩展
+使用`通用登录`进行登录时，如果登失败，则会调用`AuthenticationFailureHandler`，默认实现是`SimpleUrlAuthenticationFailureHandler`，直接返回401 Unauthorized错误。开发者可以实现自己的handler来进行特定的逻辑处理，比如返回登录失败的json格式数据。具体的实现可参考`tamboot-webapp`模块的`JsonResponseAuthenticationFailureHandler`。
+
+###### AuthenticationEntryPoint扩展
+当用户在没有登录的情况下，访问需要登录才能访问的地址时，系统就会调用`AuthenticationEntryPoint`，默认实现方式是重定向到`/`根目录。开发者可以实现自己的`AuthenticationEntryPoint`来进行特定的逻辑处理，比如返回用户未登录的json格式数据。具体的实现可参考`tamboot-webapp`模块的`JsonResponseAuthenticationEntryPoint`。
+
+###### AccessDeniedHandler扩展
+当用户访问没有权限访问的地址时，系统就会调用`AccessDeniedHandler`，默认实现是`AccessDeniedHandlerImpl`，直接返回403 Forbidden错误。开发者可以实现自己的`AccessDeniedHandler`来进行特定的逻辑处理，比如返回用户无权限的json格式数据。具体的实现可参考`tamboot-webapp`模块的`JsonResponseAccessDeniedHandler`。
+
+##### TambootAuthenticationService扩展
+`TambootAuthenticationService`提供了`login`和`logout`，开发者可使用这两个方法实现自定义的登录、登出接口，比如实现微信公众号的授权登录。下面是一段微信公众号授权登录的伪代码。
+```java
+@Service
+@Transactional(readOnly = true)
+public class WxmpServiceImpl implements WxmpService {
+	@Autowired
+	private MpAppContext mpAppContext;
+	
+	@Autowired
+	private TambootAuthenticationService authenticationService;
+	
+	@Autowired
+	private SystemUserService userService;	
+
+	@Override
+	@Transactional(readOnly = false)
+	public String login(HttpServletRequest request, HttpServletResponse response, String code) {
+		if (StringUtil.isEmpty(code)) {
+			throw new BusinessException("请求参数code不能为空");
+		}
+		
+		AuthAccessTokenResponse authResp = mpAppContext.getAuthHelper().fetchAuthAccessToken(code);
+		if (authResp == null || !authResp.isOk()) {
+			throw new BusinessException("微信授权失败");
+		}
+		
+		SystemUser existingUser = userService.findWxmpUser(authResp.getOpenId());
+		if (existingUser != null) {
+			return authenticationService.login(existingUser.getUsername(), request, response);
+		}
+		
+		SystemUser newUser = userService.createWxmpUser(authResp.getOpenId);
+		return authenticationService.login(newUser.getUsername(), request, response);
+	}
 }
 ```
