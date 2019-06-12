@@ -8,6 +8,8 @@ Tamboot是一个基于 [Spring Boot](https://spring.io/projects/spring-boot)的J
 * [tamboot-web](#tamboot-web)
 * [tamboot-security](#tamboot-security)
 * [tamboot-webapp](#tamboot-webapp)
+* [tamboot-rocketmq](#tamboot-rocketmq)
+* [tamboot-job](#tamboot-job)
 
 ### tamboot-common
 该模块包含了常用的工具类以及框架的基础接口，其它模块均依赖该模块。
@@ -129,11 +131,109 @@ public class WxmpServiceImpl implements WxmpService {
 ### tamboot-webapp
 该模块基于`tamboot-mybatis`、`tamboot-web`、`tamboot-security`的扩展点，实现了统一接口返回格式、基于redis的security信息存储、数据库通用字段自动处理等功能。开发者可基于该模块快速搭建系统，[Tamboot Admin](https://github.com/chensheng/tamboot-admin-back)就是基于该模块搭建的企业应用脚手架项目。
 
+### tamboot-rocketmq
+该模块封装了[rocketmq](http://rocketmq.apache.org/)客户端API，简化了mq消息收发的代码。
+
+###### 发送消息
+```java
+@Service
+public class RocketmqTestServiceImpl implements RocketmqTestService {
+    @Autowired
+    private SimpleMQProducer simpleProducer;
+
+    public SendResult send(String content) {
+        Message msg = new Message("testTopic", "testTag", content.getBytes(RemotingHelper.DEFAULT_CHARSET));
+        return simpleProducer.send(msg);
+    }
+}
+```
+
+###### 接收消息
+```java
+@RocketMQConsumer(consumerGroup = "testGroup", topic = "testTopic")
+public class TestTopicListener implements MessageListenerConcurrently {
+	private AtomicInteger consumeTimes = new AtomicInteger(0);
+
+	@Override
+	public ConsumeConcurrentlyStatus consumeMessage(List<MessageExt> msgs, ConsumeConcurrentlyContext context) {
+		if (consumeTimes.incrementAndGet() % 2 == 0) {
+			return ConsumeConcurrentlyStatus.RECONSUME_LATER;
+		}
+		
+		for (MessageExt msg : msgs) {
+			try {
+				String body = new String(msg.getBody(), RemotingHelper.DEFAULT_CHARSET);
+			} catch (UnsupportedEncodingException e) {
+				logger.error(ExceptionUtils.getStackTraceAsString(e));
+			}
+		}
+		
+		return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
+	}
+}
+```
+更多例子可参考`tamboot-sample`模块。
+
+### tamboot-job
+该模块基于[quartz定时任务](http://www.quartz-scheduler.org/)，简化了定时任务创建的代码。
+
+###### 创建定时任务类
+```java
+package com.tamboot.sample.job;
+
+import com.tamboot.job.core.Job;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.stereotype.Component;
+
+import java.util.Map;
+
+@Component
+public class SampleJob implements Job {
+    private Log logger = LogFactory.getLog(getClass());
+
+    @Override
+    public void execute(Map<String, Object> params) {
+        logger.info("sample job is executing");
+        if (params == null) {
+            logger.info("no job params found");
+        } else {
+            for (Map.Entry<String, Object> entry : params.entrySet()) {
+                logger.info("job param: name["+entry.getKey()+"] value["+entry.getValue()+"]");
+            }
+        }
+    }
+}
+```
+
+###### 在配置文件中添加定时任务
+```yml
+tamboot:
+  job:
+    refreshCron: 0 0/1 * * * ?
+    threadCount: 5
+    jobs:
+      - jobId: 1
+        jobBeanName: sampleJob
+        triggerCron: 0 0/1 * * * ?
+        params:
+          param1: value1
+          param2: value2
+```
+
+该模块有以下扩展点:
+* `JobDataRepository`扩展
+
+###### JobDataRepository扩展
+`JobDataRepository`的功能是存储任务数据，默认的实现是`InMemoryJobDataRepository`，从配置文件中加载任务数据。开发者可以实现自己的`JobDataRepository`，比如从数据库中加载任务数据，具体可参考`tamboot-sample`模块的`DatabaseJobDataRepository`。
 
 ## 配置信息
 
 * [tamboot-mybatis配置](#tamboot-mybatis配置)
+* [tamboot-web配置](#tamboot-web配置)
 * [tamboot-security配置](#tamboot-security配置)
+* [tamboot-rocketmq配置](#tamboot-rocketmq配置)
+* [tamboot-job配置](#tamboot-job配置)
 
 ### tamboot-mybatis配置
 参数|说明|类型|默认值
@@ -146,6 +246,9 @@ mybatis.snowFlake.generatorStartTime|id生成器的开始时间的毫秒数，�
 mybatis.configuration.mapUnderscoreToCamelCase|自动将数据库表中带下划线的字段与Model中的驼峰命名的字段对应起来，使用本框架需设为true。|Boolean|false
 mybatis.*|更多的配置可参考[MybatisProperties](https://github.com/mybatis/spring-boot-starter/blob/master/mybatis-spring-boot-autoconfigure/src/main/java/org/mybatis/spring/boot/autoconfigure/MybatisProperties.java)和[mybatis设置](http://www.mybatis.org/mybatis-3/zh/configuration.html#settings)||
 
+### tamboot-web配置
+参考[spring.mvc.*配置](https://docs.spring.io/spring-boot/docs/2.1.5.RELEASE/reference/htmlsingle/#common-application-properties)和[https://docs.spring.io/spring-boot/docs/2.1.5.RELEASE/reference/htmlsingle/#common-application-propertiesz]和[WebMvcProperties](https://github.com/spring-projects/spring-boot/blob/v2.1.5.RELEASE/spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/web/servlet/WebMvcProperties.java)。
+
 ### tamboot-security配置
 参数|说明|类型|默认值
 -----|-----|-----|-----
@@ -155,3 +258,28 @@ spring.security.ignoringAntMatchers|绕过权限检查的接口请求地址，�
 spring.security.interceptAntMatcher|检查权限时，只检查满足指定ant path格式的接口请求地址，其它地址均绕过。默认为空，表示检查除了ignoringAntMatchers外的所有接口地址。|String|
 spring.security.tokenExpirySeconds|登录凭证失效时长，单位:秒，默认为一个月。|Integer|2592000
 spring.security.rejectPublicInvocations|当系统未配置访问权限信息时，是否拒绝所有的接口访问请求。|Boolean|true
+
+### tamboot-rocketmq配置
+参数|说明|类型|默认值
+-----|-----|-----|-----
+tamboot.rocketmq.namesrv|rocketmq的name server地址，比如:127.0.0.1:9876|String|
+tamboot.rocketmq.simpleProducer.*|普通消息发送配置||
+tamboot.rocketmq.simpleProducer.group|消息所属组|String|
+tamboot.rocketmq.simpleProducer.sendMsgTimeout|发送消息超时时间(单位：毫秒)。|Integer|3000
+tamboot.rocketmq.simpleProducer.compressMsgBodyOverHowMuch|消息体超过多少字节时进行压缩(单位：byte)。|Integer|4096（即4K）
+tamboot.rocketmq.simpleProducer.retryTimesWhenSendFailed|同步发送消息失败时的重试次数。|Integer|2
+tamboot.rocketmq.simpleProducer.retryTimesWhenSendAsyncFailed|异步发送消息失败时的重试次数。|Integer|2
+tamboot.rocketmq.simpleProducer.maxMessageSize|消息体所占最大字节数(单位：byte)。|Integer|4194304（即4M）
+tamboot.rocketmq.simpleProducer.retryAnotherBrokerWhenNotStoreOk|当一个broker不可用时，尝试使用另一个broker。|Boolean|false
+tamboot.rocketmq.transactionProducer.*|事务消息发送配置，具体配置项与simpleProducer一样。||
+
+### tamboot-job配置
+参数|说明|类型|默认值
+-----|-----|-----|-----
+tamboot.job.refreshCron|刷新任务数据的时机，默认是每一分钟刷新一次，使用cron表达式。|String|0 0/1 * * * ?
+tamboot.job.threadCount|运行任务的线程池的总线程数|Integer|5
+tamboot.job.jobs|定时任务数据(使用默认的JobDataRepository时有效)|JobData[]|
+tamboot.job.jobs[].jobId|定时任务id，不能重复。|String|
+tamboot.job.jobs[].jobBeanName|定时任务bean的名称，bean必须实现自com.tamboot.job.core.Job。|String|
+tamboot.job.jobs[].triggerCron|定时任务触发的时机，使用cron表达式。|String|
+tamboot.job.jobs[].params|定时任务参数|Map<String, Object>|
