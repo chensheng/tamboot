@@ -8,8 +8,6 @@ Tamboot是一个基于 [Spring Boot](https://spring.io/projects/spring-boot)的J
 * [tamboot-web](#tamboot-web)
 * [tamboot-security](#tamboot-security)
 * [tamboot-webapp](#tamboot-webapp)
-* [tamboot-rocketmq](#tamboot-rocketmq)
-* [tamboot-job](#tamboot-job)
 
 ### tamboot-common
 该模块包含了常用的工具类以及框架的基础接口，其它模块均依赖该模块。
@@ -130,3 +128,30 @@ public class WxmpServiceImpl implements WxmpService {
 
 ### tamboot-webapp
 该模块基于`tamboot-mybatis`、`tamboot-web`、`tamboot-security`的扩展点，实现了统一接口返回格式、基于redis的security信息存储、数据库通用字段自动处理等功能。开发者可基于该模块快速搭建系统，[Tamboot Admin](https://github.com/chensheng/tamboot-admin-back)就是基于该模块搭建的企业应用脚手架项目。
+
+
+## 配置信息
+
+* [tamboot-mybatis配置](#tamboot-mybatis配置)
+* [tamboot-security配置](#tamboot-security配置)
+
+### tamboot-mybatis配置
+参数|说明|类型|默认值
+-----|-----|-----|-----
+mybatis.ignoreInterceptor|是否使用redis来保存登录凭证、访问权限等系统安全有关的数据。默认为false，表示将这些数据保存在本地内存中。|Boolean|false
+mybatis.throwVersionLockException|当发生乐观锁错误时，是否抛出异常。默认为false，表示不抛出异常，些时需要根据update语句的返回值判断数据是否更新成功。建议将该项置设为true。|Boolean|false
+mybatis.snowFlake.*|分布式id生成算法的配置||
+mybatis.snowFlake.dataCenterId|数据中心id，从1到1024。当应用要分布式部署时，不同服务器的应用配置不同的值。|Long|
+mybatis.snowFlake.generatorStartTime|id生成器的开始时间的毫秒数，不能大于当前时间，一般采用默认值即可。|Long|1493737860828
+mybatis.configuration.mapUnderscoreToCamelCase|自动将数据库表中带下划线的字段与Model中的驼峰命名的字段对应起来，使用本框架需设为true。|Boolean|false
+mybatis.*|更多的配置可参考[MybatisProperties](https://github.com/mybatis/spring-boot-starter/blob/master/mybatis-spring-boot-autoconfigure/src/main/java/org/mybatis/spring/boot/autoconfigure/MybatisProperties.java)和[mybatis设置](http://www.mybatis.org/mybatis-3/zh/configuration.html#settings)||
+
+### tamboot-security配置
+参数|说明|类型|默认值
+-----|-----|-----|-----
+spring.security.useRedisRepo|是否使用redis来保存登录凭证、访问权限等系统安全有关的数据。默认为false，表示将这些数据保存在本地内存中。|Boolean|false
+spring.security.loginPath|登录接口地址。如果该项未配置，则系统内置的登录接口不可用，开发者可实现自己的登录接口。|String|
+spring.security.ignoringAntMatchers|绕过权限检查的接口请求地址，采用ant path格式。比如一些接口数据不需要用户登录就能访问，则可通过该配置项绕过权限检查。|String[]|
+spring.security.interceptAntMatcher|检查权限时，只检查满足指定ant path格式的接口请求地址，其它地址均绕过。默认为空，表示检查除了ignoringAntMatchers外的所有接口地址。|String|
+spring.security.tokenExpirySeconds|登录凭证失效时长，单位:秒，默认为一个月。|Integer|2592000
+spring.security.rejectPublicInvocations|当系统未配置访问权限信息时，是否拒绝所有的接口访问请求。|Boolean|true
