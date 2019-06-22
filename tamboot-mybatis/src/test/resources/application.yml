@@ -5,6 +5,6 @@ mybatis:
   ignoreInterceptor: false
   throwVersionLockException: false
   snowFlake:
-    dataCenterId: 1
+    machineId: 0
   mapperLocations:
     - classpath:com/tamboot/mybatis/test/mapper/*.xml

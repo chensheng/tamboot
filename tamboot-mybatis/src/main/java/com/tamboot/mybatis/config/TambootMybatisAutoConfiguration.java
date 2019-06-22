@@ -40,8 +40,8 @@ public class TambootMybatisAutoConfiguration implements InitializingBean {
     }
 
     private void checkSnowFlakeProperties() {
-        if (properties.getSnowFlake() == null || properties.getSnowFlake().getDataCenterId() == null) {
-            throw new NullPointerException("mybatis.dataCenterId must not be null, please check your configuration.");
+        if (properties.getSnowFlake() == null || properties.getSnowFlake().getMachineId() == null) {
+            throw new NullPointerException("mybatis.machineId must not be null, please check your configuration.");
         }
     }
 
@@ -54,7 +54,7 @@ public class TambootMybatisAutoConfiguration implements InitializingBean {
 
     @Bean
     public SnowFlakeIdGeneratorFactory snowFlakeIdGeneratorFactory() {
-        return new SnowFlakeIdGeneratorFactory(properties.getSnowFlake().getDataCenterId(), properties.getSnowFlake().getGeneratorStartTime());
+        return new SnowFlakeIdGeneratorFactory(properties.getSnowFlake().getMachineId(), properties.getSnowFlake().getTwepoch());
     }
 
     @Bean

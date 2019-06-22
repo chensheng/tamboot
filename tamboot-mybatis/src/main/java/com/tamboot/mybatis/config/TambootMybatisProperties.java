@@ -36,24 +36,24 @@ public class TambootMybatisProperties {
     }
 
     public static class SnowFlake {
-        private Long dataCenterId;
+        private Long machineId;
 
-        private long generatorStartTime;
+        private long twepoch = 1493737860828L;
 
-        public Long getDataCenterId() {
-            return dataCenterId;
+        public Long getMachineId() {
+            return machineId;
         }
 
-        public void setDataCenterId(Long dataCenterId) {
-            this.dataCenterId = dataCenterId;
+        public void setMachineId(Long machineId) {
+            this.machineId = machineId;
         }
 
-        public long getGeneratorStartTime() {
-            return generatorStartTime;
+        public long getTwepoch() {
+            return twepoch;
         }
 
-        public void setGeneratorStartTime(long generatorStartTime) {
-            this.generatorStartTime = generatorStartTime;
+        public void setTwepoch(long twepoch) {
+            this.twepoch = twepoch;
         }
     }
 }

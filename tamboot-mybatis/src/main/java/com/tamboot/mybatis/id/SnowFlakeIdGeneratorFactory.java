@@ -8,13 +8,13 @@ import java.util.function.Function;
 public class SnowFlakeIdGeneratorFactory {
 	private final ConcurrentHashMap<String, SnowFlakeIdGenerator> generatorMap = new ConcurrentHashMap<String, SnowFlakeIdGenerator>();
 
-	private long dataCenterId;
+	private long machineId;
 
-	private long generatorStartTime;
+	private long twepoch;
 
-	public SnowFlakeIdGeneratorFactory(long dataCenterId, long generatorStartTime) {
-	    this.dataCenterId = dataCenterId;
-	    this.generatorStartTime = generatorStartTime;
+	public SnowFlakeIdGeneratorFactory(long machineId, long twepoch) {
+	    this.machineId = machineId;
+	    this.twepoch = twepoch;
     }
 
 	public long nextId(String generatorName) {
@@ -23,7 +23,7 @@ public class SnowFlakeIdGeneratorFactory {
 
 			@Override
 			public SnowFlakeIdGenerator apply(String t) {
-				return new SnowFlakeIdGenerator(dataCenterId, generatorStartTime);
+				return new SnowFlakeIdGenerator(machineId, twepoch);
 			}
 			
 		});

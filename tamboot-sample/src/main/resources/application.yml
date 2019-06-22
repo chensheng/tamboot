@@ -25,7 +25,7 @@ mybatis:
   ignoreInterceptor: false
   throwVersionLockException: true
   snowFlake:
-    dataCenterId: 1
+    machineId: 0
   configuration:
     mapUnderscoreToCamelCase: true
 tamboot:
