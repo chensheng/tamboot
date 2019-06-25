@@ -2,19 +2,9 @@ package com.tamboot.mybatis.test.model;
 
 import java.util.Date;
 
-public class UserInfoModel {
-	private Long id;
-	
-	private Long version;
-	
-	private Date createTime;
-	
-	private Long creator;
-	
-	private Date modifyTime;
-	
-	private Long modifier;
-	
+public class UserInfoModel extends BaseModel {
+	private static final long serialVersionUID = -1879018434978466118L;
+
 	private String username;
 	
 	private String password;

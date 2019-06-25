@@ -1,23 +1,13 @@
 package com.tamboot.mybatis.test.mapper;
 
-import com.github.pagehelper.Page;
+import com.tamboot.mybatis.provider.CommonMapper;
+import com.tamboot.mybatis.test.dto.UserInfoDto;
 import com.tamboot.mybatis.test.model.UserInfoModel;
-import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
-public interface UserInfoMapper {
-	UserInfoModel selectOne(Long id);
-	
-	List<UserInfoModel> selectAll();
-	
-	Page<UserInfoModel> page(@Param("pageNum") int pageNum, @Param("pageSize") int pageSize);
-	
-	int insert(UserInfoModel model);
-	
-	int delete(Long id);
-	
+public interface UserInfoMapper extends CommonMapper<UserInfoModel, Long> {
 	int deleteByUsername(String username);
-	
-	int update(UserInfoModel model);
+
+	List<UserInfoDto> selectAllDto();
 }

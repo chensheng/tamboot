@@ -291,4 +291,54 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
 		}
 		return result.toString();
 	}
+
+	public static String underscoreToCamel(String str) {
+		if (str == null) {
+			return null;
+		}
+
+		if (!str.contains("_")) {
+		    return str;
+        }
+
+		StringBuilder result = new StringBuilder();
+		String[] unitArr = str.split("_");
+		for (int i = 0; i < unitArr.length; i++) {
+			String unit = unitArr[i];
+
+			if (i == 0) {
+				result.append(unit);
+				continue;
+			}
+
+			char firstChar = unit.charAt(0);
+			String formattedUnit = String.valueOf(firstChar).toUpperCase();
+			if (unit.length() > 1) {
+				formattedUnit += unit.substring(1);
+			}
+			result.append(formattedUnit);
+		}
+
+		return result.toString();
+	}
+
+	public static String camelToUnderscore(String str) {
+	    if (str == null) {
+	        return null;
+        }
+
+        String[] words = splitByCharacterTypeCamelCase(str);
+	    StringBuilder result = new StringBuilder();
+	    for (String word : words) {
+	        if (isEmpty(word)) {
+	            continue;
+            }
+            result.append(word);
+	        result.append("_");
+        }
+        if (result.length() > 0) {
+            result.deleteCharAt(result.length() - 1);
+        }
+	    return result.toString();
+    }
 }

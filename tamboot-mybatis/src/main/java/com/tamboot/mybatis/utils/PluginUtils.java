@@ -1,5 +1,5 @@
 package com.tamboot.mybatis.utils;
-import com.tamboot.common.utils.ExceptionUtils;
+
 import org.apache.ibatis.binding.MapperMethod.ParamMap;
 import org.apache.ibatis.binding.MapperRegistry;
 import org.apache.ibatis.mapping.MappedStatement;
@@ -56,9 +56,7 @@ public class PluginUtils {
             Method mapperMethod = mapperClass.getMethod(mapperMethodName, methodArgTypes);
             return mapperMethod.getAnnotation(annotationClass);
         } catch (NoSuchMethodException e) {
-        	logger.error(ExceptionUtils.getStackTraceAsString(e));
         } catch (SecurityException e) {
-        	logger.error(ExceptionUtils.getStackTraceAsString(e));
         }
         
         return null;
@@ -129,8 +127,7 @@ public class PluginUtils {
         if (paramObj == null) {
             return methodArgTypes;
         }
-        
-        
+
         if(paramObj instanceof ParamMap<?>) {
             ParamMap<?> mmp = (ParamMap<?>) paramObj;
             if (mmp == null || mmp.isEmpty()) {

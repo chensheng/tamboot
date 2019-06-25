@@ -31,7 +31,7 @@ public class InsertTest {
 		Assert.assertEquals("testInsertUsername", model.getUsername());
 		Assert.assertEquals("654321", model.getPassword());
 		
-		UserInfoModel insertedModel = userInfoMapper.selectOne(model.getId());
+		UserInfoModel insertedModel = userInfoMapper.selectOneById(model.getId());
 		Assert.assertNotNull(insertedModel);
 	}
 	

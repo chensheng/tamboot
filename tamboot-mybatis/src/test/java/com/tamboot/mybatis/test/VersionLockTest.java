@@ -26,7 +26,7 @@ public class VersionLockTest {
 		
 		model.setVersion(8L);
 		model.setPassword("654321");
-		int updateResult = userInfoMapper.update(model);
+		int updateResult = userInfoMapper.updateById(model);
 		Assert.assertEquals(0, updateResult);
 	}
 	

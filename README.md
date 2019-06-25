@@ -18,7 +18,15 @@ Tamboot是一个基于 [Spring Boot](https://spring.io/projects/spring-boot)的J
 该模块包含了常用的工具类以及框架的基础接口，其它模块均依赖该模块。
 
 ### tamboot-mybatis
-该模块基于mybatis，封装了分布式ID生成、分页查询、乐观锁、通用字段统一处理等功能。该模块有以下扩展点：
+该模块基于mybatis，封装了通用Mapper、分布式ID生成、分页查询、乐观锁、通用字段统一处理等功能。
+
+通用Mapper实现了常用的增删改查方法，只需要继承自CommonMapper就能直接使用这些方法。
+```java
+public interface SystemUserMapper extends CommonMapper<SystemUserModel, Long> {
+}
+```
+
+该模块有以下扩展点：
 * `InsertStrategy`扩展
 * `UpdateStrategy`扩展
 

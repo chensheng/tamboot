@@ -2,9 +2,12 @@ spring:
   transaction:
     rollback-on-commit-failure: true
 mybatis:
+
   ignoreInterceptor: false
   throwVersionLockException: false
   snowFlake:
     machineId: 0
+  configuration:
+    mapUnderscoreToCamelCase: true
   mapperLocations:
     - classpath:com/tamboot/mybatis/test/mapper/*.xml

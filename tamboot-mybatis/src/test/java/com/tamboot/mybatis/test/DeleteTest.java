@@ -19,22 +19,22 @@ public class DeleteTest {
 	private UserInfoMapper userInfoMapper;
 	
 	@Test
-	public void testDelete() {
+	public void testDeleteById() {
 		UserInfoModel newModel = new UserInfoModel();
 		newModel.setUsername("testDeleteUsername");
 		newModel.setPassword("123456");
 		userInfoMapper.insert(newModel);
 		
-		UserInfoModel model = userInfoMapper.selectOne(newModel.getId());
+		UserInfoModel model = userInfoMapper.selectOneById(newModel.getId());
 		Assert.assertNotNull(model);
-		List<UserInfoModel> models = userInfoMapper.selectAll();
+		List<UserInfoModel> models = userInfoMapper.selectAllByExample(null, null);
 		Assert.assertEquals(3, models.size());
 		
-		userInfoMapper.delete(newModel.getId());
+		userInfoMapper.deleteById(newModel.getId());
 		
-		UserInfoModel deletedModel = userInfoMapper.selectOne(newModel.getId());
+		UserInfoModel deletedModel = userInfoMapper.selectOneById(newModel.getId());
 		Assert.assertNull(deletedModel);
-		models = userInfoMapper.selectAll();
+		models = userInfoMapper.selectAllByExample(null, null);
 		Assert.assertEquals(2, models.size());
 	}
 	

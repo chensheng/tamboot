@@ -7,6 +7,7 @@ import com.tamboot.mybatis.interceptor.UpdateInterceptor;
 import com.tamboot.mybatis.interceptor.UpdateResultInterceptor;
 import com.tamboot.mybatis.strategy.InsertStrategy;
 import com.tamboot.mybatis.strategy.UpdateStrategy;
+import com.tamboot.mybatis.utils.MyBatisAppContextHolder;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.boot.autoconfigure.MybatisAutoConfiguration;
 import org.springframework.beans.factory.InitializingBean;
@@ -43,6 +44,11 @@ public class TambootMybatisAutoConfiguration implements InitializingBean {
         if (properties.getSnowFlake() == null || properties.getSnowFlake().getMachineId() == null) {
             throw new NullPointerException("mybatis.machineId must not be null, please check your configuration.");
         }
+    }
+
+    @Bean
+    public MyBatisAppContextHolder myBatisAppContextHolder() {
+        return new MyBatisAppContextHolder();
     }
 
     @Bean

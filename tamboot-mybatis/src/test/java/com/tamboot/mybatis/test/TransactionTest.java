@@ -40,7 +40,7 @@ public class TransactionTest {
 		Assert.assertNotNull(model);
 		Assert.assertNotNull(model.getId());
 		
-		UserInfoModel savedModel = userInfoMapper.selectOne(model.getId());
+		UserInfoModel savedModel = userInfoMapper.selectOneById(model.getId());
 		Assert.assertNotNull(savedModel);
 	}
 	

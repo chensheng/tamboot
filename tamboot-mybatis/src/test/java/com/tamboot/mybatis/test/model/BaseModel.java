@@ -1,4 +1,4 @@
-package com.tamboot.webapp.core;
+package com.tamboot.mybatis.test.model;
 
 import com.tamboot.mybatis.annotation.IgnoreInInsertUpdateSql;
 
@@ -6,23 +6,25 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class BaseModel implements Serializable {
+    private static final long serialVersionUID = -3118032057118133430L;
+
     @IgnoreInInsertUpdateSql
     protected Long id;
 
     @IgnoreInInsertUpdateSql
-    protected Long creator;
+    protected Long version;
 
     @IgnoreInInsertUpdateSql
     protected Date createTime;
 
     @IgnoreInInsertUpdateSql
-    protected Long modifier;
+    protected Long creator;
 
     @IgnoreInInsertUpdateSql
     protected Date modifyTime;
 
     @IgnoreInInsertUpdateSql
-    protected Long version;
+    protected Long modifier;
 
     public Long getId() {
         return id;
@@ -32,12 +34,12 @@ public class BaseModel implements Serializable {
         this.id = id;
     }
 
-    public Long getCreator() {
-        return creator;
+    public Long getVersion() {
+        return version;
     }
 
-    public void setCreator(Long creator) {
-        this.creator = creator;
+    public void setVersion(Long version) {
+        this.version = version;
     }
 
     public Date getCreateTime() {
@@ -48,12 +50,12 @@ public class BaseModel implements Serializable {
         this.createTime = createTime;
     }
 
-    public Long getModifier() {
-        return modifier;
+    public Long getCreator() {
+        return creator;
     }
 
-    public void setModifier(Long modifier) {
-        this.modifier = modifier;
+    public void setCreator(Long creator) {
+        this.creator = creator;
     }
 
     public Date getModifyTime() {
@@ -64,11 +66,11 @@ public class BaseModel implements Serializable {
         this.modifyTime = modifyTime;
     }
 
-    public Long getVersion() {
-        return version;
+    public Long getModifier() {
+        return modifier;
     }
 
-    public void setVersion(Long version) {
-        this.version = version;
+    public void setModifier(Long modifier) {
+        this.modifier = modifier;
     }
 }
