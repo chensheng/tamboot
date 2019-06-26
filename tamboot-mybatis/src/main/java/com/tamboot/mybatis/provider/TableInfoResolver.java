@@ -1,6 +1,6 @@
 package com.tamboot.mybatis.provider;
 
-import com.tamboot.common.utils.StringUtils;
+import com.tamboot.common.tools.text.TextUtil;
 import com.tamboot.mybatis.annotation.IgnoreInInsertUpdateSql;
 import com.tamboot.mybatis.strategy.InsertStrategy;
 import com.tamboot.mybatis.utils.MyBatisAppContextHolder;
@@ -51,17 +51,17 @@ public class TableInfoResolver {
 
         String column;
         Column columnAnno = field.getAnnotation(Column.class);
-        if (columnAnno != null && StringUtils.isNotEmpty(columnAnno.name())) {
+        if (columnAnno != null && TextUtil.isNotEmpty(columnAnno.name())) {
             column = columnAnno.name();
         } else {
-            column = StringUtils.camelToUnderscore(field.getName()).toLowerCase();
+            column = TextUtil.camelToUnderscore(field.getName()).toLowerCase();
         }
         return column;
     }
 
     private static String parseTableName(Class<?> modelType) {
         Table annotation = modelType.getDeclaredAnnotation(Table.class);
-        if (annotation != null && StringUtils.isNotEmpty(annotation.name())) {
+        if (annotation != null && TextUtil.isNotEmpty(annotation.name())) {
             return annotation.name();
         }
 
@@ -72,7 +72,7 @@ public class TableInfoResolver {
             modelName = modelName.substring(0, modelName.indexOf("Entity"));
         }
 
-        return StringUtils.camelToUnderscore(modelName).toLowerCase();
+        return TextUtil.camelToUnderscore(modelName).toLowerCase();
     }
 
     private static String parseIdColumn(Field[] modelFields) {
@@ -91,7 +91,7 @@ public class TableInfoResolver {
         }
 
         String defaultIdColumn = getDefaultIdColumn();
-        return StringUtils.underscoreToCamel(defaultIdColumn);
+        return TextUtil.underscoreToCamel(defaultIdColumn);
     }
 
     private static String[] parseColumnsInSql(Field[] fieldsInSql) {
@@ -161,7 +161,7 @@ public class TableInfoResolver {
     private static String getDefaultIdColumn() {
         try {
             InsertStrategy insertStrategy = MyBatisAppContextHolder.get().getBean(InsertStrategy.class);
-            if (insertStrategy != null && StringUtils.isNotEmpty(insertStrategy.getDefaultIdColumnName())) {
+            if (insertStrategy != null && TextUtil.isNotEmpty(insertStrategy.getDefaultIdColumnName())) {
                 return insertStrategy.getDefaultIdColumnName();
             }
         } catch (BeansException e) {

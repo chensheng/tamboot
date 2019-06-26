@@ -1,6 +1,6 @@
 package com.tamboot.mybatis.interceptor;
 
-import com.tamboot.common.utils.ExceptionUtils;
+import com.tamboot.common.tools.base.ExceptionUtil;
 import com.tamboot.mybatis.annotation.UpdateConfig;
 import com.tamboot.mybatis.config.TambootMybatisProperties;
 import com.tamboot.mybatis.strategy.UpdateStrategy;
@@ -112,7 +112,7 @@ public class UpdateInterceptor implements Interceptor {
         try {
         	versionFieldVal = paramMetaObject.getValue(versionFieldName);
         } catch (Exception e) {
-        	logger.debug(ExceptionUtils.getStackTraceAsString(e));
+        	logger.debug(ExceptionUtil.stackTraceText(e));
         	return null;
         }
         
@@ -157,7 +157,7 @@ public class UpdateInterceptor implements Interceptor {
         try {
         	fieldVal = paramMetaObject.getValue(fieldName);
         } catch (Exception e) {
-        	logger.debug(ExceptionUtils.getStackTraceAsString(e));
+        	logger.debug(ExceptionUtil.stackTraceText(e));
         }
         if (fieldVal == null) {
             return;
@@ -239,7 +239,7 @@ public class UpdateInterceptor implements Interceptor {
             try {
                 paramMetaObject.setValue(fieldName, fieldVal);    
             } catch (Exception e) {
-            	logger.debug(ExceptionUtils.getStackTraceAsString(e));
+            	logger.debug(ExceptionUtil.stackTraceText(e));
             }
         }
     }

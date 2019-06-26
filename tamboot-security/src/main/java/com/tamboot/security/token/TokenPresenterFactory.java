@@ -1,6 +1,6 @@
 package com.tamboot.security.token;
 
-import com.tamboot.common.utils.StringUtils;
+import com.tamboot.common.tools.text.TextUtil;
 import com.tamboot.security.config.TambootSecurityProperties;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
@@ -29,7 +29,7 @@ public class TokenPresenterFactory {
 
     public TokenPresenter get(HttpServletRequest request) {
         String presenterName = request.getHeader(HEADER_NAME_TOKEN_PRESENTER);
-        if (StringUtils.isEmpty(presenterName)) {
+        if (TextUtil.isEmpty(presenterName)) {
             return defaultTokenPresenter;
         }
 

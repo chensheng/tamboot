@@ -1,7 +1,6 @@
 package com.tamboot.security.core;
 
-import com.tamboot.common.utils.StringUtils;
-import com.tamboot.security.token.TokenPresenter;
+import com.tamboot.common.tools.text.TextUtil;
 import com.tamboot.security.token.TokenPresenterFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
@@ -26,7 +25,7 @@ public class LazyAuthenticationSuccessHandler implements AuthenticationSuccessHa
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         String token = getTokenPresenterFactory().get(request).generate(request, authentication);
-        if (StringUtils.isNotEmpty(token)) {
+        if (TextUtil.isNotEmpty(token)) {
             getTokenPresenterFactory().get(request).write(request, response, token);
         }
         getHandler().onAuthenticationSuccess(request, response, authentication);

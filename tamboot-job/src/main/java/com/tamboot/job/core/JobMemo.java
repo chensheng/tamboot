@@ -1,7 +1,7 @@
 package com.tamboot.job.core;
 
-import com.tamboot.common.utils.ExceptionUtils;
-import com.tamboot.common.utils.StringUtils;
+import com.tamboot.common.tools.base.ExceptionUtil;
+import com.tamboot.common.tools.text.TextUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -56,7 +56,7 @@ public class JobMemo {
 			try {
 				scheduler.unscheduleJob(TriggerKey.triggerKey(jobId));
 			} catch (SchedulerException e) {
-				logger.error(ExceptionUtils.getStackTraceAsString(e));
+				logger.error(ExceptionUtil.stackTraceText(e));
 			}
 		}
 	}
@@ -70,7 +70,7 @@ public class JobMemo {
 			try {
 				scheduler.rescheduleJob(triggerKey, newTrigger);
 			} catch (SchedulerException e) {
-				logger.error(ExceptionUtils.getStackTraceAsString(e));
+				logger.error(ExceptionUtil.stackTraceText(e));
 			}
 		}
 	}
@@ -83,7 +83,7 @@ public class JobMemo {
 			try {
 				scheduler.scheduleJob(createDelegatingJobDetail(jobId), newTrigger);
 			} catch (SchedulerException e) {
-				logger.error(ExceptionUtils.getStackTraceAsString(e));
+				logger.error(ExceptionUtil.stackTraceText(e));
 			}
 		}
 	}
@@ -118,7 +118,7 @@ public class JobMemo {
 		}
 		
 		for (JobData jobData : jobDatas) {
-			if (StringUtils.isEmpty(jobData.getJobId())) {
+			if (TextUtil.isEmpty(jobData.getJobId())) {
 				continue;
 			}
 			

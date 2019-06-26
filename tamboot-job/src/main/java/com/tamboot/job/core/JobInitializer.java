@@ -1,6 +1,6 @@
 package com.tamboot.job.core;
 
-import com.tamboot.common.utils.ExceptionUtils;
+import com.tamboot.common.tools.base.ExceptionUtil;
 import com.tamboot.job.config.TambootJobProperties;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -35,7 +35,7 @@ public class JobInitializer implements ApplicationListener<ApplicationReadyEvent
 			this.scheduleRefreshMemoJob(scheduler);
 			hasStarted = true;
 		} catch (SchedulerException e) {
-			logger.error(ExceptionUtils.getStackTraceAsString(e));
+			logger.error(ExceptionUtil.stackTraceText(e));
 		} finally {
 			startSemaphore.release();
 		}
@@ -57,7 +57,7 @@ public class JobInitializer implements ApplicationListener<ApplicationReadyEvent
 		try {
 			scheduler.scheduleJob(refreshJobDetail, refreshTrigger);
 		} catch (SchedulerException e) {
-			logger.error(ExceptionUtils.getStackTraceAsString(e));
+			logger.error(ExceptionUtil.stackTraceText(e));
 		}
 	}
 

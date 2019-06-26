@@ -3,7 +3,7 @@ package com.tamboot.sample.job;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tamboot.common.utils.ExceptionUtils;
+import com.tamboot.common.tools.base.ExceptionUtil;
 import com.tamboot.job.core.JobData;
 import com.tamboot.job.core.JobDataRepository;
 import com.tamboot.sample.mapper.SystemJobMapper;
@@ -59,11 +59,11 @@ public class DatabaseJobDataRepository implements JobDataRepository {
         try {
             return objectMapper.readValue(jobParams, Map.class);
         } catch (JsonParseException e) {
-            logger.error(ExceptionUtils.getStackTraceAsString(e));
+            logger.error(ExceptionUtil.stackTraceText(e));
         } catch (JsonMappingException e) {
-            logger.error(ExceptionUtils.getStackTraceAsString(e));
+            logger.error(ExceptionUtil.stackTraceText(e));
         } catch (IOException e) {
-            logger.error(ExceptionUtils.getStackTraceAsString(e));
+            logger.error(ExceptionUtil.stackTraceText(e));
         }
         return null;
     }

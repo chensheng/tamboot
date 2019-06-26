@@ -1,6 +1,6 @@
 package com.tamboot.rocketmq.core;
 
-import com.tamboot.common.utils.StringUtils;
+import com.tamboot.common.tools.text.TextUtil;
 import com.tamboot.rocketmq.annotation.RocketMQConsumer;
 import com.tamboot.rocketmq.config.TambootRocketMQProperties;
 import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
@@ -37,11 +37,11 @@ public class RocketMQMessageListenerContainer implements InitializingBean {
 		consumer.setConsumeThreadMin(config.consumerThreadMin());
 		consumer.setConsumeThreadMax(config.consumerThreadMax());
 		
-		if (StringUtils.isNotEmpty(config.consumerGroup())) {
+		if (TextUtil.isNotEmpty(config.consumerGroup())) {
 			consumer.setConsumerGroup(config.consumerGroup());
 		}
 		
-		if (StringUtils.isNotEmpty(config.topic())) {
+		if (TextUtil.isNotEmpty(config.topic())) {
 			if (config.selectorType() == SelectorType.TAG) {
 				consumer.subscribe(config.topic(), config.selectorExpression());
 			} else if (config.selectorType() == SelectorType.SQL92) {

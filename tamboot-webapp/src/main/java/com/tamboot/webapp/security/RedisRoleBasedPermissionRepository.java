@@ -1,6 +1,6 @@
 package com.tamboot.webapp.security;
 
-import com.tamboot.common.utils.RedisKeyFactory;
+import com.tamboot.common.tools.text.RedisKeyFactory;
 import com.tamboot.security.permission.RoleBasedPermission;
 import com.tamboot.security.permission.RoleBasedPermissionRepository;
 import com.tamboot.webapp.core.RedisNamespace;

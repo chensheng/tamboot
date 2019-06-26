@@ -1,6 +1,6 @@
 package com.tamboot.web.config;
 
-import com.tamboot.common.utils.ExceptionUtils;
+import com.tamboot.common.tools.base.ExceptionUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +27,7 @@ public class TambootResponseEntityExceptionHandler {
         } else if (except instanceof MethodArgumentNotValidException) {
             return this.doMethodArgumentNotValidException((MethodArgumentNotValidException) except);
         } else {
-            logger.error(ExceptionUtils.getStackTraceAsString(except));
+            logger.error(ExceptionUtil.stackTraceText(except));
             return ResponseEntity.ok(TambootResponse.exception());
         }
     }

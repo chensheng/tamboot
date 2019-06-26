@@ -1,7 +1,7 @@
 package com.tamboot.security.token;
 
-import com.tamboot.common.utils.MD5Utils;
-import com.tamboot.common.utils.StringUtils;
+import com.tamboot.common.tools.text.MD5Util;
+import com.tamboot.common.tools.text.TextUtil;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -13,7 +13,7 @@ public abstract class TokenPresenter {
 
     public final String generate(HttpServletRequest request, Authentication authentication) {
         if (authentication == null) {
-            return StringUtils.EMPTY_STRING;
+            return TextUtil.EMPTY_STRING;
         }
 
         String remoteAddr = request.getRemoteAddr();
@@ -33,8 +33,8 @@ public abstract class TokenPresenter {
                 .append(TOKEN_SEPARATOR)
                 .append(System.currentTimeMillis())
                 .append(TOKEN_SEPARATOR)
-                .append(StringUtils.getRandomStr());
-        return MD5Utils.md5With32(rawToken.toString());
+                .append(TextUtil.getRandomStr());
+        return MD5Util.md5With32(rawToken.toString());
     }
 
 	public abstract String getName();

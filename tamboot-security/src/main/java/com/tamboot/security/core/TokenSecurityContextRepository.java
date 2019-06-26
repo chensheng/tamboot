@@ -1,6 +1,6 @@
 package com.tamboot.security.core;
 
-import com.tamboot.common.utils.StringUtils;
+import com.tamboot.common.tools.text.TextUtil;
 import com.tamboot.security.config.TambootSecurityProperties;
 import com.tamboot.security.token.TokenPresenterFactory;
 import com.tamboot.security.token.TokenRepositoryFactory;
@@ -32,7 +32,7 @@ public class TokenSecurityContextRepository implements SecurityContextRepository
     @Override
     public SecurityContext loadContext(HttpRequestResponseHolder requestResponseHolder) {
         String token = tokenPresenterFactory.get(requestResponseHolder.getRequest()).readFromRequest(requestResponseHolder.getRequest());
-        if (StringUtils.isEmpty(token)) {
+        if (TextUtil.isEmpty(token)) {
             return this.createNewContext();
         }
 
@@ -47,11 +47,11 @@ public class TokenSecurityContextRepository implements SecurityContextRepository
     @Override
     public void saveContext(SecurityContext context, HttpServletRequest request, HttpServletResponse response) {
         String token = tokenPresenterFactory.get(request).readFromResponse(request, response);
-        if (StringUtils.isEmpty(token)) {
+        if (TextUtil.isEmpty(token)) {
             token = tokenPresenterFactory.get(request).readFromRequest(request);
         }
 
-        if (StringUtils.isEmpty(token)) {
+        if (TextUtil.isEmpty(token)) {
             return;
         }
 
@@ -61,7 +61,7 @@ public class TokenSecurityContextRepository implements SecurityContextRepository
     @Override
     public boolean containsContext(HttpServletRequest request) {
         String token = tokenPresenterFactory.get(request).readFromRequest(request);
-        if (StringUtils.isEmpty(token)) {
+        if (TextUtil.isEmpty(token)) {
             return false;
         }
 

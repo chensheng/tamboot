@@ -1,6 +1,6 @@
 package com.tamboot.job.core;
 
-import com.tamboot.common.utils.ExceptionUtils;
+import com.tamboot.common.tools.base.ExceptionUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.quartz.Scheduler;
@@ -23,7 +23,7 @@ public class JobShutdownHook implements ApplicationListener<ContextClosedEvent> 
 		try {
 			this.scheduler.shutdown();
 		} catch (SchedulerException e) {
-			logger.error(ExceptionUtils.getStackTraceAsString(e));
+			logger.error(ExceptionUtil.stackTraceText(e));
 		}
 	}
 

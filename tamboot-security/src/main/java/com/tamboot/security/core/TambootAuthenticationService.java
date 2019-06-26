@@ -1,6 +1,6 @@
 package com.tamboot.security.core;
 
-import com.tamboot.common.utils.StringUtils;
+import com.tamboot.common.tools.text.TextUtil;
 import com.tamboot.security.config.TambootSecurityProperties;
 import com.tamboot.security.token.TokenPresenterFactory;
 import com.tamboot.security.token.TokenRepositoryFactory;
@@ -40,7 +40,7 @@ public class TambootAuthenticationService {
      */
     public final String login(String username, HttpServletRequest request, HttpServletResponse response) {
         if (username == null || request == null || response == null) {
-            return StringUtils.EMPTY;
+            return TextUtil.EMPTY;
         }
 
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);

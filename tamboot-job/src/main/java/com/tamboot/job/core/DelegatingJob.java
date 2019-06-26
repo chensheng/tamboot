@@ -1,6 +1,6 @@
 package com.tamboot.job.core;
 
-import com.tamboot.common.utils.ExceptionUtils;
+import com.tamboot.common.tools.base.ExceptionUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.quartz.JobDataMap;
@@ -22,7 +22,7 @@ public class DelegatingJob implements org.quartz.Job {
 		try {
 			targetJob.execute(jobDataMap.getWrappedMap());
 		} catch (Throwable e) {
-			logger.error(ExceptionUtils.getStackTraceAsString(e));
+			logger.error(ExceptionUtil.stackTraceText(e));
 		}
 	}
 
@@ -35,7 +35,7 @@ public class DelegatingJob implements org.quartz.Job {
 				return (Job) targetJob;
 			}
 		} catch (ClassCastException e) {
-			logger.error(ExceptionUtils.getStackTraceAsString(e));
+			logger.error(ExceptionUtil.stackTraceText(e));
 		} catch (BeansException e) {
 			logger.error("Could not find job bean with name " + jobBeanName);
 		}

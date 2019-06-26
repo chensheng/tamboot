@@ -1,6 +1,6 @@
 package com.tamboot.webapp.security;
 
-import com.tamboot.common.utils.RedisKeyFactory;
+import com.tamboot.common.tools.text.RedisKeyFactory;
 import com.tamboot.security.token.TokenRepository;
 import com.tamboot.webapp.core.RedisNamespace;
 import org.springframework.data.redis.core.RedisTemplate;

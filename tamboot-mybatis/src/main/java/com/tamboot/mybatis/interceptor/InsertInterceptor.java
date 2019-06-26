@@ -1,6 +1,6 @@
 package com.tamboot.mybatis.interceptor;
 
-import com.tamboot.common.utils.ExceptionUtils;
+import com.tamboot.common.tools.base.ExceptionUtil;
 import com.tamboot.mybatis.annotation.InsertConfig;
 import com.tamboot.mybatis.config.TambootMybatisProperties;
 import com.tamboot.mybatis.id.SnowFlakeIdGeneratorFactory;
@@ -201,7 +201,7 @@ public class InsertInterceptor implements Interceptor {
             try {
                 paramMetaObject.setValue(fieldName, fieldVal);    
             } catch (Exception e) {
-            	logger.error(ExceptionUtils.getStackTraceAsString(e));
+                logger.debug(ExceptionUtil.stackTraceText(e));
             }
         }
     }

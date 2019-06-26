@@ -1,6 +1,6 @@
 package com.tamboot.sample.rocketmq;
 
-import com.tamboot.common.utils.ExceptionUtils;
+import com.tamboot.common.tools.base.ExceptionUtil;
 import com.tamboot.rocketmq.annotation.RocketMQConsumer;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -32,7 +32,7 @@ public class Topic1Listener implements MessageListenerConcurrently {
 				String body = new String(msg.getBody(), RemotingHelper.DEFAULT_CHARSET);
 				logger.info("Receive msg from Topic1: msg[" + msg + "] body[" + body + "]");
 			} catch (UnsupportedEncodingException e) {
-				logger.error(ExceptionUtils.getStackTraceAsString(e));
+				logger.error(ExceptionUtil.stackTraceText(e));
 			}
 		}
 		

@@ -1,6 +1,6 @@
 package com.tamboot.security.permission;
 
-import com.tamboot.common.utils.StringUtils;
+import com.tamboot.common.tools.text.TextUtil;
 import com.tamboot.security.config.TambootSecurityProperties;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
@@ -48,10 +48,10 @@ public class InMemoryRoleBasedPermissionRepository implements RoleBasedPermissio
 
             List<RoleBasedPermission> result = new ArrayList<RoleBasedPermission>();
             for (TambootSecurityProperties.RoleBasedPermission permission : permissions) {
-                if (StringUtils.isEmpty(permission.getUrlAntPattern()) || StringUtils.isEmpty(permission.getUrlAntPattern())) {
+                if (TextUtil.isEmpty(permission.getUrlAntPattern()) || TextUtil.isEmpty(permission.getUrlAntPattern())) {
                     continue;
                 }
-                String[] roles = StringUtils.splitByComma(permission.getRoles());
+                String[] roles = TextUtil.splitByComma(permission.getRoles());
                 if (roles != null && roles.length > 0) {
                     RoleBasedPermission item = new RoleBasedPermission(permission.getUrlAntPattern());
                     for (String role : roles) {

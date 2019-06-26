@@ -1,10 +1,10 @@
 package com.tamboot.sample.security;
 
-import com.tamboot.common.utils.StringUtils;
-import com.tamboot.sample.model.SystemPermissionModel;
-import com.tamboot.security.permission.RoleBasedPermission;
+import com.tamboot.common.tools.text.TextUtil;
 import com.tamboot.sample.mapper.SystemPermissionMapper;
+import com.tamboot.sample.model.SystemPermissionModel;
 import com.tamboot.sample.utils.ApplicationContextHolder;
+import com.tamboot.security.permission.RoleBasedPermission;
 import com.tamboot.webapp.security.RedisRoleBasedPermissionRepository;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
@@ -28,7 +28,7 @@ public class RoleBasedPermissionInitializer implements ApplicationListener<Appli
         for (SystemPermissionModel permission : permissions) {
             roleBasedPermissions.add(
                     new RoleBasedPermission(permission.getUrlAntPattern())
-                            .addRoles(StringUtils.splitByComma(permission.getRoles())));
+                            .addRoles(TextUtil.splitByComma(permission.getRoles())));
         }
 
         RedisRoleBasedPermissionRepository permissionRepository = ApplicationContextHolder.get().getBean(RedisRoleBasedPermissionRepository.class);

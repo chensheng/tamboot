@@ -1,6 +1,6 @@
 package com.tamboot.sample.rocketmq;
 
-import com.tamboot.common.utils.ExceptionUtils;
+import com.tamboot.common.tools.base.ExceptionUtil;
 import com.tamboot.rocketmq.annotation.RocketMQConsumer;
 import com.tamboot.rocketmq.core.RocketMQConsumerLifecycleListener;
 import org.apache.commons.logging.Log;
@@ -27,7 +27,7 @@ public class TopicOrderlyListener implements MessageListenerOrderly, RocketMQCon
 				String content = new String(msg.getBody(), RemotingHelper.DEFAULT_CHARSET);
 				logger.info("Receive msg from TopicOrderly, content[" + content + "]");
 			} catch (UnsupportedEncodingException e) {
-				logger.error(ExceptionUtils.getStackTraceAsString(e));
+				logger.error(ExceptionUtil.stackTraceText(e));
 			}
 		}
 		
