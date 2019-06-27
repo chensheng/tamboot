@@ -38,3 +38,11 @@ tamboot:
       group: simpleProducerGroup
     transactionProducer:
       group: transactionProducerGroup
+  xxljob:
+    client:
+      appName: tamboot-sample
+      adminAddresses: http://127.0.0.1:8080/xxl-job-admin
+server:
+  servlet:
+    context-path: /tamboot-sample
+  port: 8181

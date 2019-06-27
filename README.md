@@ -13,22 +13,23 @@ Tamboot是一个基于 [Spring Boot](https://spring.io/projects/spring-boot)的J
 * [tamboot-webapp](#tamboot-webapp)
 * [tamboot-rocketmq](#tamboot-rocketmq)
 * [tamboot-job](#tamboot-job)
+* [tamboot-xxljob-client](#tamboot-xxljob-client)
 
 ### tamboot-common
 该模块包含了常用的工具类以及框架的基础接口，其它模块均依赖该模块。
 
 ### tamboot-mybatis
-该模块基于mybatis，封装了通用Mapper、分布式ID生成、分页查询、乐观锁、通用字段统一处理等功能。
+该模块基于mybatis，封装了通用Mapper、分布式ID生成、分页查询、乐观锁、通用字段统一处理等功能。下面将具体介绍以下功能：
+* `通用Mapper`
+* `InsertStrategy扩展`
+* `UpdateStrategy扩展`
 
+###### 通用Mapper
 通用Mapper实现了常用的增删改查方法，只需要继承自CommonMapper就能直接使用这些方法。
 ```java
 public interface SystemUserMapper extends CommonMapper<SystemUserModel, Long> {
 }
 ```
-
-该模块有以下扩展点：
-* `InsertStrategy`扩展
-* `UpdateStrategy`扩展
 
 ###### InsertStrategy扩展
 默认的`InsertStrategy`实现是`SnowFlakeIdInsertStrategy`，该策略主要实现了分布式ID的自动插入功能。开发者可自定义策略（比如自动插入创建时间、创建人等信息）来替换默认策略，建议自定义策略继承自`SnowFlakeIdInsertStrategy`。可参考`tamboot-webapp`模块的`CreateInfoInsertStrategy`。
@@ -238,6 +239,33 @@ tamboot:
 ###### JobDataRepository扩展
 `JobDataRepository`的功能是存储任务数据，默认的实现是`InMemoryJobDataRepository`，从配置文件中加载任务数据。开发者可以实现自己的`JobDataRepository`，比如从数据库中加载任务数据，具体可参考`tamboot-sample`模块的`DatabaseJobDataRepository`。
 
+### tamboot-xxljob-client
+该模块封装了分布式任务调度平台[xxl-job](http://www.xuxueli.com/xxl-job/#/)的客户端，引入该模块，进行简单的配置就能使用。
+
+`简单配置`
+```yaml
+tamboot:
+  xxljob:
+    client:
+      appName: tamboot-sample
+      adminAddresses: http://127.0.0.1:8080/xxl-job-admin
+```
+
+`实现定时任务`
+```java
+@Component
+@JobHandler("testXxlJob")
+public class TestXxlJob extends IJobHandler {
+    private static final Logger logger = LoggerFactory.getLogger(TestXxlJob.class);
+
+    @Override
+    public ReturnT<String> execute(String s) throws Exception {
+        logger.info("test xxl job is running");
+        return ReturnT.SUCCESS;
+    }
+}
+```
+
 ## 配置信息
 
 * [tamboot-mybatis配置](#tamboot-mybatis配置)
@@ -245,6 +273,7 @@ tamboot:
 * [tamboot-security配置](#tamboot-security配置)
 * [tamboot-rocketmq配置](#tamboot-rocketmq配置)
 * [tamboot-job配置](#tamboot-job配置)
+* [tamboot-xxljob-client配置](#tamboot-xxljob-client配置)
 
 ### tamboot-mybatis配置
 参数|说明|类型|默认值
@@ -294,3 +323,14 @@ tamboot.job.jobs[].jobId|定时任务id，不能重复。|String|
 tamboot.job.jobs[].jobBeanName|定时任务bean的名称，bean必须实现自com.tamboot.job.core.Job。|String|
 tamboot.job.jobs[].triggerCron|定时任务触发的时机，使用cron表达式。|String|
 tamboot.job.jobs[].params|定时任务参数|Map<String, Object>|
+
+### tamboot-xxljob-client配置
+参数|说明|类型|默认值
+-----|-----|-----|-----
+tamboot.xxljob.client.appName|执行器AppName [选填]：执行器心跳注册分组依据；为空则关闭自动注册|String|
+tamboot.xxljob.client.adminAddresses|调度中心部署跟地址 [选填]：如调度中心集群部署存在多个地址则用逗号分隔。执行器将会使用该地址进行"执行器心跳注册"和"任务结果回调"；为空则关闭自动注册；|String|
+tamboot.xxljob.client.ip|执行器IP [选填]：默认为空表示自动获取IP，多网卡时可手动设置指定IP，该IP不会绑定Host仅作为通讯实用；地址信息用于 "执行器注册" 和 "调度中心请求并触发任务"；|String|
+tamboot.xxljob.client.port|执行器端口号 [选填]：小于等于0则自动获取；默认端口为9999，单机部署多个执行器时，注意要配置不同执行器端口；|Integer|9999
+tamboot.xxljob.client.accessToken|执行器通讯TOKEN [选填]：非空时启用；|String|
+tamboot.xxljob.client.logPath|执行器运行日志文件存储磁盘路径 [选填] ：需要对该路径拥有读写权限；为空则使用默认路径；|String|
+tamboot.xxljob.client.logRetentionDays|执行器日志保存天数 [选填] ：值大于3时生效，启用执行器Log文件定期清理功能，否则不生效；|Integer|

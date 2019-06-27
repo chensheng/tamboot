@@ -13,7 +13,7 @@
     <groupId>com.tamboot</groupId>
     <artifactId>tamboot-parent</artifactId>
     <packaging>pom</packaging>
-    <version>1.0.0.RELEASE</version>
+    <version>1.0.0-SNAPSHOT</version>
     <url>http://www.tamboot.com</url>
 
     <modules>
@@ -25,6 +25,7 @@
         <module>tamboot-sample</module>
         <module>tamboot-job</module>
         <module>tamboot-rocketmq</module>
+        <module>tamboot-xxljob-client</module>
     </modules>
 
     <properties>
@@ -38,6 +39,7 @@
         <spring-security-test.version>5.1.5.RELEASE</spring-security-test.version>
         <rocketmq.version>4.2.0</rocketmq.version>
         <hikaricp.version>3.3.1</hikaricp.version>
+        <xx-ljob.version>2.0.1</xx-ljob.version>
     </properties>
 
     <dependencyManagement>
@@ -87,6 +89,11 @@
                 <groupId>com.zaxxer</groupId>
                 <artifactId>HikariCP</artifactId>
                 <version>${hikaricp.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.xuxueli</groupId>
+                <artifactId>xxl-job-core</artifactId>
+                <version>${xx-ljob.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
