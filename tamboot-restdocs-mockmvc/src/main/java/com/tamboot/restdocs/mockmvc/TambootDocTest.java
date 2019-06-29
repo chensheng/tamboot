@@ -1,7 +1,6 @@
 package com.tamboot.restdocs.mockmvc;
 
 import com.tamboot.common.tools.mapper.JsonMapper;
-import com.tamboot.common.tools.text.TextUtil;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Rule;
@@ -54,33 +53,19 @@ public abstract class TambootDocTest {
 
     protected String asciidocPath = "src/main/asciidoc";
 
-    protected int port = 8080;
-
     public TambootDocTest() {
+
     }
 
     public TambootDocTest(String asciidocPath) {
-        this(asciidocPath, null);
-    }
-
-    public TambootDocTest(Integer port) {
-        this(null, port);
-    }
-
-    public TambootDocTest(String asciidocPath, Integer port) {
-        if (TextUtil.isNotEmpty(asciidocPath)) {
-            this.asciidocPath = asciidocPath;
-        }
-        if (port != null) {
-            this.port = port;
-        }
+        this.asciidocPath = asciidocPath;
     }
 
     @Before
     public void setUp() {
         this.mockMvc = MockMvcBuilders
                 .webAppContextSetup(context)
-                .apply(documentationConfiguration(restDocumentation).uris().withScheme("http").withHost("localhost").withPort(port))
+                .apply(documentationConfiguration(restDocumentation))
                 .build();
     }
 
