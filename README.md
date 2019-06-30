@@ -14,6 +14,7 @@ Tamboot是一个基于 [Spring Boot](https://spring.io/projects/spring-boot)的J
 * [tamboot-rocketmq](#tamboot-rocketmq)
 * [tamboot-job](#tamboot-job)
 * [tamboot-xxljob-client](#tamboot-xxljob-client)
+* [tamboot-restdocs-mockmvc](#tamboot-restdocs-mockmvc)
 
 ### tamboot-common
 该模块包含了常用的工具类以及框架的基础接口，其它模块均依赖该模块。
@@ -265,6 +266,139 @@ public class TestXxlJob extends IJobHandler {
     }
 }
 ```
+
+### tamboot-restdocs-mockmvc
+该模块封装了API文档生成工具[Spring Rest Docs](https://spring.io/projects/spring-restdocs)，引入tamboot-restdocs-mockmvc后，只需编写相应的单元测试用例，就能自动生成API文档。
+
+`添加maven插件`
+```xml
+<build>
+    <plugins>
+        <plugin>
+            <groupId>org.asciidoctor</groupId>
+            <artifactId>asciidoctor-maven-plugin</artifactId>
+            <version>1.5.3</version>
+            <executions>
+                <execution>
+                    <id>generate-docs</id>
+                    <phase>prepare-package</phase>
+                    <goals>
+                        <goal>process-asciidoc</goal>
+                    </goals>
+                    <configuration>
+                        <backend>html</backend>
+                        <doctype>book</doctype>
+                        <outputDirectory>${basedir}/src/main/apidoc</outputDirectory>
+                    </configuration>
+                </execution>
+            </executions>
+            <dependencies>
+                <dependency>
+                    <groupId>org.springframework.restdocs</groupId>
+                    <artifactId>spring-restdocs-asciidoctor</artifactId>
+                    <version>2.0.3.RELEASE</version>
+                </dependency>
+            </dependencies>
+        </plugin>
+    </plugins>
+</build>
+```
+
+`添加首页和数据字典文档`
+
+为了避免接口文档过于分散，开发者需单独添加一个测试类，生成数据字典的文档，并将所有子文档整合在一起。
+```java
+@AsciidocConfig(ignore = true)
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+public class ZIndexDocTest extends TambootDocTest {
+
+    @Test
+    public void zIndex() {
+        AsciidocGenerator.createIndexDoc(this.context, getClass().getPackage().getName(), this.asciidocPath);
+    }
+
+    @Test
+    public void dictionary() {
+        AsciidocGenerator.createDictionaryDoc(this.asciidocPath,
+                dictionaryItem(ResponseType.class, "接口返回码"),
+                dictionaryItem(UserStatus.class, "用户状态")
+        );
+    }
+}
+```
+
+`编写测试用例`
+
+开发者只需要继承TambootDocTest，并针对相应的接口编写单元测试用例。
+```java
+@AsciidocConfig(title = "个人信息", orderIndex = 2)
+@WithUserDetails
+public class CommonUserDocTest extends TambootDocTest {
+
+    @Test
+    @AsciidocConfig(title = "获取个人信息", orderIndex = 1)
+    public void details() throws Exception {
+        this.mockMvc
+                .perform(getJson( "/common/user/details"))
+                .andExpect(status().isOk())
+                .andDo(document(
+                        requestParameters(),
+                        commonResponseFields(
+                                fieldWithPath("data").type(JsonFieldType.OBJECT).description("数据"),
+                                fieldWithPath("data.userId").type(JsonFieldType.STRING).description("用户id"),
+                                fieldWithPath("data.username").type(JsonFieldType.STRING).description("用户名"),
+                                fieldWithPath("data.password").type(JsonFieldType.STRING).description("密码"),
+                                fieldWithPath("data.accountNonExpired").type(JsonFieldType.BOOLEAN).description("账号未过期"),
+                                fieldWithPath("data.accountNonLocked").type(JsonFieldType.BOOLEAN).description("账号未被锁"),
+                                fieldWithPath("data.credentialsNonExpired").type(JsonFieldType.BOOLEAN).description("密码未过期"),
+                                fieldWithPath("data.enabled").type(JsonFieldType.BOOLEAN).description("用户是否启用"),
+                                fieldWithPath("data.roles[]").type(JsonFieldType.ARRAY).description("拥有的角色编码"),
+                                fieldWithPath("data.authorities[]").type(JsonFieldType.ARRAY).description("权限信息"),
+                                fieldWithPath("data.authorities[].authority").type(JsonFieldType.STRING).description("权限值").optional()
+                        ))
+                );
+    }
+
+    @Test
+    @AsciidocConfig(title = "修改密码", orderIndex = 2, snippets = AsciidocConfig.BODY_PARAMS_SNIPPETS)
+    public void updatePassword() throws Exception {
+        UpdatePasswordForm form = new UpdatePasswordForm();
+        form.setOldPassword("Qwb123@456");
+        form.setNewPassword("Wbm@123456q");
+        this.mockMvc
+                .perform(postJson("/common/user/updatePassword", form))
+                .andExpect(status().isOk())
+                .andDo(document(
+                        requestBodyFields(
+                                fieldWithPath("oldPassword").type(JsonFieldType.STRING).description("* 原密码"),
+                                fieldWithPath("newPassword").type(JsonFieldType.STRING).description("* 新密码，密码必须由数字、字母、特殊字符(_#@!)组成，且不能少于8位。")
+                        ),
+                        commonResponseFields(
+                                fieldWithPath("data").ignored().optional()
+                        )
+                ));
+    }
+}
+```
+
+`生成文档`
+
+只需执行mvn package命令，就会在src/main/apidoc目录下生成API文档。
+
+`模拟登录`
+
+当测试一些需要登录后才能操作的API时，开发者只需要在测试类或测试方法上添加@WithUserDetails(value = "user")注解（value值为对应的用户名，且系统中必须存在该用户）。
+
+`@AsciidocConfig注解`
+
+参数|说明|类型|默认值
+-----|-----|-----|-----
+title|文档或接口的标题。如果不设置该项，则默认使用测试类或测试方法的名称。|String|
+orderIndex|文档的排序，值越小排序越靠前。|Integer|0
+snippets|在文档中使用哪些代码片段，系统中内置了QUERY_PARAMS_SNIPPETS（请求参数都在url参数上）、BODY_PARAMS_SNIPPETS（请求参数都在body中）、PATH_PARAMS_SNIPPETS（请求参数都在url路径上）三种类型。如果系统内置的代码片段不满足要求，开发者可以填写自定义的代码片段。|String|QUERY_PARAMS_SNIPPET
+id|生成的adoc文件的id。测试类id生成方式为：将类名转成中划线分隔的字符串，并去除DocTest后缀。测试方法id生成方式为：类id-方法名|String|
+ignore|是否跳过文档的生成|Boolean|false
+
 
 ## 配置信息
 
