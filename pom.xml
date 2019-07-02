@@ -27,6 +27,7 @@
         <module>tamboot-rocketmq</module>
         <module>tamboot-xxljob-client</module>
         <module>tamboot-restdocs-mockmvc</module>
+        <module>tamboot-redis</module>
     </modules>
 
     <properties>

@@ -33,8 +33,9 @@
             <version>${revision}</version>
         </dependency>
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-redis</artifactId>
+            <groupId>com.tamboot</groupId>
+            <artifactId>tamboot-redis</artifactId>
+            <version>${revision}</version>
         </dependency>
     </dependencies>
 
