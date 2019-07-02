@@ -1,25 +1,25 @@
 package com.tamboot.webapp.security;
 
-import com.tamboot.common.tools.text.RedisKeyFactory;
 import com.tamboot.security.permission.RoleBasedPermission;
 import com.tamboot.security.permission.RoleBasedPermissionRepository;
-import com.tamboot.webapp.core.RedisNamespace;
-import org.springframework.data.redis.core.RedisTemplate;
+import com.tamboot.webapp.core.SecurityConfigKeys;
+import com.tamboot.webapp.core.SecurityRedisNamespace;
+import com.tamboot.webapp.core.SecurityRedisTemplate;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 
 public class RedisRoleBasedPermissionRepository implements RoleBasedPermissionRepository {
-    private RedisTemplate redisTemplate;
 
-    public RedisRoleBasedPermissionRepository(RedisTemplate redisTemplate) {
+    private SecurityRedisTemplate redisTemplate;
+
+    public RedisRoleBasedPermissionRepository(SecurityRedisTemplate redisTemplate) {
         this.redisTemplate = redisTemplate;
     }
 
     @Override
     public List<RoleBasedPermission> load() {
-        String key = createKey();
-        Object permissions = redisTemplate.opsForValue().get(key);
+        Object permissions = redisTemplate.get(SecurityRedisNamespace.CONFIG, SecurityConfigKeys.ROLE_BASED_PERMISSIONS);
         if (permissions == null) {
             return null;
         }
@@ -33,11 +33,6 @@ public class RedisRoleBasedPermissionRepository implements RoleBasedPermissionRe
             return;
         }
 
-        String key = createKey();
-        redisTemplate.opsForValue().set(key, permissions);
-    }
-
-    private String createKey() {
-        return RedisKeyFactory.create(RedisNamespace.CONFIG.value(), "roleBasedPermissions");
+        redisTemplate.set(SecurityRedisNamespace.CONFIG, SecurityConfigKeys.ROLE_BASED_PERMISSIONS, permissions);
     }
 }

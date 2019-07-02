@@ -8,10 +8,10 @@ import com.tamboot.security.token.TokenRepository;
 import com.tamboot.web.config.ResponseBodyDecorator;
 import com.tamboot.webapp.core.JsonResponseWriter;
 import com.tamboot.webapp.core.PageResponseBodyDecorator;
+import com.tamboot.webapp.core.SecurityRedisTemplate;
 import com.tamboot.webapp.mybatis.CreateInfoInsertStrategy;
 import com.tamboot.webapp.mybatis.ModifyInfoUpdateStrategy;
 import com.tamboot.webapp.security.*;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,13 +26,19 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 public class TambootWebappAutoConfiguration {
     @Bean
     @ConditionalOnProperty("spring.security.useRedisRepo")
-    public RoleBasedPermissionRepository roleBasedPermissionRepository(RedisTemplate redisTemplate) {
+    public SecurityRedisTemplate securityRedisTemplate(RedisTemplate redisTemplate) {
+        return new SecurityRedisTemplate(redisTemplate);
+    }
+
+    @Bean
+    @ConditionalOnProperty("spring.security.useRedisRepo")
+    public RoleBasedPermissionRepository roleBasedPermissionRepository(SecurityRedisTemplate redisTemplate) {
         return new RedisRoleBasedPermissionRepository(redisTemplate);
     }
 
     @Bean
     @ConditionalOnProperty("spring.security.useRedisRepo")
-    public TokenRepository redisRepository(RedisTemplate redisTemplate) {
+    public TokenRepository redisRepository(SecurityRedisTemplate redisTemplate) {
         return new RedisTokenRepository(redisTemplate);
     }
 

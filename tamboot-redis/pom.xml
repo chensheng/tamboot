@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>tamboot-webapp</artifactId>
+    <artifactId>tamboot-redis</artifactId>
 
     <dependencies>
         <dependency>
@@ -18,25 +18,8 @@
             <version>${revision}</version>
         </dependency>
         <dependency>
-            <groupId>com.tamboot</groupId>
-            <artifactId>tamboot-mybatis</artifactId>
-            <version>${revision}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.tamboot</groupId>
-            <artifactId>tamboot-security</artifactId>
-            <version>${revision}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.tamboot</groupId>
-            <artifactId>tamboot-web</artifactId>
-            <version>${revision}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.tamboot</groupId>
-            <artifactId>tamboot-redis</artifactId>
-            <version>${revision}</version>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
         </dependency>
     </dependencies>
-
 </project>
