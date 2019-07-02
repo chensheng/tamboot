@@ -22,7 +22,6 @@
         <module>tamboot-mybatis</module>
         <module>tamboot-security</module>
         <module>tamboot-webapp</module>
-        <module>tamboot-sample</module>
         <module>tamboot-job</module>
         <module>tamboot-rocketmq</module>
         <module>tamboot-xxljob-client</module>
