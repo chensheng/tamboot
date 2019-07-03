@@ -63,13 +63,13 @@ public abstract class TambootRedisTemplate<T> {
         return value.toString();
     }
 
-    public boolean setIfAbsent(T namespace, String key, String value) {
+    public boolean setIfAbsent(T namespace, String key, Object value) {
         String keyWithNamespace = createKeyWithNamespace(namespace, key);
         Boolean success = redisTemplate.opsForValue().setIfAbsent(keyWithNamespace, value);
         return success != null && success;
     }
 
-    public boolean setIfAbsent(T namespace, String key, String value, Duration timeout) {
+    public boolean setIfAbsent(T namespace, String key, Object value, Duration timeout) {
         String keyWithNamespace = createKeyWithNamespace(namespace, key);
         Boolean success = redisTemplate.opsForValue().setIfAbsent(keyWithNamespace, value, timeout);
         return isSuccess(success);
@@ -97,13 +97,13 @@ public abstract class TambootRedisTemplate<T> {
         return redisTemplate.opsForValue().decrement(keyWithNamespace, delta);
     }
 
-    public Boolean zsetAdd(T namespace, String key, String value, double score) {
+    public Boolean zsetAdd(T namespace, String key, Object value, double score) {
         String keyWithNamespace = createKeyWithNamespace(namespace, key);
         Boolean success = redisTemplate.opsForZSet().add(keyWithNamespace, value, score);
         return isSuccess(success);
     }
 
-    public Long zsetAdd(T namespace, String key, Set<ZSetOperations.TypedTuple<String>> tuples) {
+    public Long zsetAdd(T namespace, String key, Set<ZSetOperations.TypedTuple<Object>> tuples) {
         String keyWithNamespace = createKeyWithNamespace(namespace, key);
         return redisTemplate.opsForZSet().add(keyWithNamespace, tuples);
     }
@@ -113,7 +113,7 @@ public abstract class TambootRedisTemplate<T> {
         return redisTemplate.opsForZSet().remove(keyWithNamespace, values);
     }
 
-    public Double zsetIncrementScore(T namespace, String key, String value, double delta) {
+    public Double zsetIncrementScore(T namespace, String key, Object value, double delta) {
         String keyWithNamespace = createKeyWithNamespace(namespace, key);
         return redisTemplate.opsForZSet().incrementScore(keyWithNamespace, value, delta);
     }
@@ -148,12 +148,12 @@ public abstract class TambootRedisTemplate<T> {
         return redisTemplate.opsForZSet().zCard(keyWithNamespace);
     }
 
-    public Long setAdd(T namespace, String key, String... values) {
+    public Long setAdd(T namespace, String key, Object... values) {
         String keyWithNamespace = createKeyWithNamespace(namespace, key);
         return redisTemplate.opsForSet().add(keyWithNamespace, values);
     }
 
-    public Long setAdd(T namespace, String key, Duration timeout, String... values) {
+    public Long setAdd(T namespace, String key, Duration timeout, Object... values) {
         redisTemplate.multi();
         Long result = setAdd(namespace, key, values);
         expired(namespace, key, timeout);
@@ -161,7 +161,7 @@ public abstract class TambootRedisTemplate<T> {
         return result;
     }
 
-    public boolean setIsMember(T namespace, String key, String value) {
+    public boolean setIsMember(T namespace, String key, Object value) {
         String keyWithNamespace = createKeyWithNamespace(namespace, key);
         Boolean success = redisTemplate.opsForSet().isMember(keyWithNamespace, value);
         return isSuccess(success);

@@ -27,6 +27,7 @@
         <module>tamboot-xxljob-client</module>
         <module>tamboot-restdocs-mockmvc</module>
         <module>tamboot-redis</module>
+        <module>tamboot-mybatis-machineid</module>
     </modules>
 
     <properties>

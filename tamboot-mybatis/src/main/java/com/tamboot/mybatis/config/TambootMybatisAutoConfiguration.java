@@ -1,7 +1,9 @@
 package com.tamboot.mybatis.config;
 
 import com.github.pagehelper.PageInterceptor;
+import com.tamboot.mybatis.id.MachineIdStrategy;
 import com.tamboot.mybatis.id.SnowFlakeIdGeneratorFactory;
+import com.tamboot.mybatis.id.StaticMachineIdStrategy;
 import com.tamboot.mybatis.interceptor.InsertInterceptor;
 import com.tamboot.mybatis.interceptor.UpdateInterceptor;
 import com.tamboot.mybatis.interceptor.UpdateResultInterceptor;
@@ -10,7 +12,6 @@ import com.tamboot.mybatis.strategy.UpdateStrategy;
 import com.tamboot.mybatis.utils.MyBatisAppContextHolder;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.boot.autoconfigure.MybatisAutoConfiguration;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -28,22 +29,11 @@ import java.util.Properties;
 @ConditionalOnClass(SqlSessionFactory.class)
 @EnableConfigurationProperties(TambootMybatisProperties.class)
 @AutoConfigureBefore(MybatisAutoConfiguration.class)
-public class TambootMybatisAutoConfiguration implements InitializingBean {
+public class TambootMybatisAutoConfiguration {
     private final TambootMybatisProperties properties;
 
     public TambootMybatisAutoConfiguration(TambootMybatisProperties properties) {
         this.properties = properties;
-    }
-
-    @Override
-    public void afterPropertiesSet() throws Exception {
-        this.checkSnowFlakeProperties();
-    }
-
-    private void checkSnowFlakeProperties() {
-        if (properties.getSnowFlake() == null || properties.getSnowFlake().getMachineId() == null) {
-            throw new NullPointerException("mybatis.machineId must not be null, please check your configuration.");
-        }
     }
 
     @Bean
@@ -58,9 +48,15 @@ public class TambootMybatisAutoConfiguration implements InitializingBean {
         return transactionManager;
     }
 
+    @Bean(initMethod = "init")
+    @ConditionalOnMissingBean(MachineIdStrategy.class)
+    public MachineIdStrategy machineIdStrategy() {
+        return new StaticMachineIdStrategy(properties);
+    }
+
     @Bean
-    public SnowFlakeIdGeneratorFactory snowFlakeIdGeneratorFactory() {
-        return new SnowFlakeIdGeneratorFactory(properties.getSnowFlake().getMachineId(), properties.getSnowFlake().getTwepoch());
+    public SnowFlakeIdGeneratorFactory snowFlakeIdGeneratorFactory(MachineIdStrategy machineIdStrategy) {
+        return new SnowFlakeIdGeneratorFactory(machineIdStrategy.getMachineId(), properties.getSnowFlake().getTwepoch());
     }
 
     @Bean
