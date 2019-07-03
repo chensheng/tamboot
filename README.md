@@ -401,9 +401,9 @@ id|生成的adoc文件的id。测试类id生成方式为：将类名转成中划
 ignore|是否跳过文档的生成|Boolean|false
 
 ### tamboot-redis
-该模块基于[spring-data-redis](https://spring.io/projects/spring-data-redis)，封装了常用的redis操作，并实现了redis的命名空间、基于redis的分布式锁功能。
+该模块基于[spring-data-redis](https://spring.io/projects/spring-data-redis)，封装了常用的redis操作，并实现了命名空间、分布式锁功能。
 
-`创建namespace`
+`创建命名空间`
 
 命名空间可以防止redis的key产生冲突，一般使用枚举值enum。
 
