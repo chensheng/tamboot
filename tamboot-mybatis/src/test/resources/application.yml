@@ -2,7 +2,6 @@ spring:
   transaction:
     rollback-on-commit-failure: true
 mybatis:
-
   ignoreInterceptor: false
   throwVersionLockException: false
   snowFlake:
