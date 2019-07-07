@@ -1,17 +1,16 @@
 package com.tamboot.webapp.config;
 
+import com.tamboot.mybatis.config.TambootMybatisAutoConfiguration;
 import com.tamboot.mybatis.id.SnowFlakeIdGeneratorFactory;
 import com.tamboot.mybatis.strategy.InsertStrategy;
 import com.tamboot.mybatis.strategy.UpdateStrategy;
 import com.tamboot.security.permission.RoleBasedPermissionRepository;
 import com.tamboot.security.token.TokenRepository;
-import com.tamboot.web.config.ResponseBodyDecorator;
-import com.tamboot.webapp.core.JsonResponseWriter;
-import com.tamboot.webapp.core.PageResponseBodyDecorator;
-import com.tamboot.webapp.core.SecurityRedisTemplate;
 import com.tamboot.webapp.mybatis.CreateInfoInsertStrategy;
 import com.tamboot.webapp.mybatis.ModifyInfoUpdateStrategy;
 import com.tamboot.webapp.security.*;
+import com.tamboot.webapp.web.JsonResponseWriter;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,24 +23,6 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 
 @Configuration
 public class TambootWebappAutoConfiguration {
-    @Bean
-    @ConditionalOnProperty("spring.security.useRedisRepo")
-    public SecurityRedisTemplate securityRedisTemplate(RedisTemplate redisTemplate) {
-        return new SecurityRedisTemplate(redisTemplate);
-    }
-
-    @Bean
-    @ConditionalOnProperty("spring.security.useRedisRepo")
-    public RoleBasedPermissionRepository roleBasedPermissionRepository(SecurityRedisTemplate redisTemplate) {
-        return new RedisRoleBasedPermissionRepository(redisTemplate);
-    }
-
-    @Bean
-    @ConditionalOnProperty("spring.security.useRedisRepo")
-    public TokenRepository redisRepository(SecurityRedisTemplate redisTemplate) {
-        return new RedisTokenRepository(redisTemplate);
-    }
-
     @Bean
     public AccessDeniedHandler accessDeniedHandler() {
         return new JsonResponseAccessDeniedHandler();
@@ -63,22 +44,40 @@ public class TambootWebappAutoConfiguration {
     }
 
     @Bean
-    public InsertStrategy insertStrategy(SnowFlakeIdGeneratorFactory idFactory) {
-        return new CreateInfoInsertStrategy(idFactory);
-    }
-
-    @Bean
-    public UpdateStrategy updateStrategy() {
-        return new ModifyInfoUpdateStrategy();
-    }
-
-    @Bean
     public JsonResponseWriter jsonResponseWriter(MappingJackson2HttpMessageConverter converter) {
         return new JsonResponseWriter(converter);
     }
 
-    @Bean
-    public ResponseBodyDecorator responseBodyDecorator() {
-        return new PageResponseBodyDecorator();
+    @Configuration
+    @ConditionalOnProperty("spring.security.useRedisRepo")
+    public static class SecurityRedisRepoConfiguration {
+        @Bean
+        public SecurityRedisTemplate securityRedisTemplate(RedisTemplate redisTemplate) {
+            return new SecurityRedisTemplate(redisTemplate);
+        }
+
+        @Bean
+        public RoleBasedPermissionRepository roleBasedPermissionRepository(SecurityRedisTemplate redisTemplate) {
+            return new RedisRoleBasedPermissionRepository(redisTemplate);
+        }
+
+        @Bean
+        public TokenRepository redisRepository(SecurityRedisTemplate redisTemplate) {
+            return new RedisTokenRepository(redisTemplate);
+        }
+    }
+
+    @Configuration
+    @ConditionalOnClass(TambootMybatisAutoConfiguration.class)
+    public static class TambootWebappMybatisConfiguration {
+        @Bean
+        public InsertStrategy insertStrategy(SnowFlakeIdGeneratorFactory idFactory) {
+            return new CreateInfoInsertStrategy(idFactory);
+        }
+
+        @Bean
+        public UpdateStrategy updateStrategy() {
+            return new ModifyInfoUpdateStrategy();
+        }
     }
 }

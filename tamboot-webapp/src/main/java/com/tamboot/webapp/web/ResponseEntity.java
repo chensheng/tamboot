@@ -1,6 +1,6 @@
-package com.tamboot.webapp.core;
+package com.tamboot.webapp.web;
 
-import com.tamboot.web.config.TambootResponse;
+import com.tamboot.web.core.TambootResponse;
 
 public class ResponseEntity {
     public static final TambootResponse ACCESS_DENIED = new TambootResponse(ResponseType.ACCESS_DENIED.code(), ResponseType.ACCESS_DENIED.msg());

@@ -1,8 +1,6 @@
 package com.tamboot.webapp.security;
 
 import com.tamboot.security.token.TokenRepository;
-import com.tamboot.webapp.core.SecurityRedisNamespace;
-import com.tamboot.webapp.core.SecurityRedisTemplate;
 import org.springframework.security.core.context.SecurityContext;
 
 import java.time.Duration;

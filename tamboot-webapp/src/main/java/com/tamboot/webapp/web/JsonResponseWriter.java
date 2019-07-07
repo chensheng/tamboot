@@ -1,4 +1,4 @@
-package com.tamboot.webapp.core;
+package com.tamboot.webapp.web;
 
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;

@@ -1,4 +1,4 @@
-package com.tamboot.webapp.core;
+package com.tamboot.webapp.security;
 
 public enum SecurityRedisNamespace {
     TOKEN("token", "user login token"),

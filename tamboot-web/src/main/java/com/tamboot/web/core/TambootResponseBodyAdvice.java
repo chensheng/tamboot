@@ -1,10 +1,11 @@
-package com.tamboot.web.config;
+package com.tamboot.web.core;
 
+import com.tamboot.common.web.ApiResponse;
+import com.tamboot.web.annotation.IgnoreResponseWrapper;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -25,13 +26,18 @@ public class TambootResponseBodyAdvice implements ResponseBodyAdvice<Object> {
 
     @Override
     public Object beforeBodyWrite(Object body, MethodParameter returnType, MediaType selectedContentType, Class<? extends HttpMessageConverter<?>> selectedConverterType, ServerHttpRequest request, ServerHttpResponse response) {
+        IgnoreResponseWrapper ignoreResponseWrapper = returnType.getMethodAnnotation(IgnoreResponseWrapper.class);
+        if (ignoreResponseWrapper != null) {
+            return body;
+        }
+
         if (selectedConverterType.isAssignableFrom(StringHttpMessageConverter.class)) {
             return body;
         }
 
         body = responseBodyDecorateCenter.doDecorate(body);
 
-        if (body != null && body.getClass().isAssignableFrom(TambootResponse.class)) {
+        if (body != null && ApiResponse.class.isAssignableFrom(body.getClass())) {
             return body;
         }
 

@@ -1,7 +1,7 @@
 package com.tamboot.webapp.security;
 
-import com.tamboot.webapp.core.JsonResponseWriter;
-import com.tamboot.webapp.core.ResponseEntity;
+import com.tamboot.webapp.web.JsonResponseWriter;
+import com.tamboot.webapp.web.ResponseEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;

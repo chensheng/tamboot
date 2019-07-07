@@ -1,4 +1,4 @@
-package com.tamboot.web.config;
+package com.tamboot.web.core;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.logging.Log;

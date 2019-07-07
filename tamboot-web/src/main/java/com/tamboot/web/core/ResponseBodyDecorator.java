@@ -1,4 +1,4 @@
-package com.tamboot.web.config;
+package com.tamboot.web.core;
 
 import org.springframework.core.Ordered;
 

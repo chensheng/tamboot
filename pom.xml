@@ -4,17 +4,17 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.1.5.RELEASE</version>
-    </parent>
-
     <groupId>com.tamboot</groupId>
     <artifactId>tamboot-parent</artifactId>
     <packaging>pom</packaging>
     <version>1.0.0-SNAPSHOT</version>
     <url>http://www.tamboot.com</url>
+
+    <properties>
+        <java.version>1.8</java.version>
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
+    </properties>
 
     <modules>
         <module>tamboot-common</module>
@@ -28,76 +28,8 @@
         <module>tamboot-restdocs-mockmvc</module>
         <module>tamboot-redis</module>
         <module>tamboot-mybatis-machineid</module>
+        <module>tamboot-dependencies</module>
+        <module>tamboot-starter</module>
     </modules>
-
-    <properties>
-        <revision>${version}</revision>
-        <commons-lang3.version>3.8.1</commons-lang3.version>
-        <guava.version>20.0</guava.version>
-        <dozer.version>5.5.1</dozer.version>
-        <mybatis-spring-boot-starter.version>2.0.1</mybatis-spring-boot-starter.version>
-        <pagehelper.version>5.0.4</pagehelper.version>
-        <servlet-api.version>3.1.0</servlet-api.version>
-        <spring-security-test.version>5.1.5.RELEASE</spring-security-test.version>
-        <rocketmq.version>4.2.0</rocketmq.version>
-        <hikaricp.version>3.3.1</hikaricp.version>
-        <xx-ljob.version>2.0.1</xx-ljob.version>
-    </properties>
-
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>javax.servlet</groupId>
-                <artifactId>javax.servlet-api</artifactId>
-                <version>${servlet-api.version}</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.commons</groupId>
-                <artifactId>commons-lang3</artifactId>
-                <version>${commons-lang3.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.google.guava</groupId>
-                <artifactId>guava</artifactId>
-                <version>${guava.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>net.sf.dozer</groupId>
-                <artifactId>dozer</artifactId>
-                <version>${dozer.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.mybatis.spring.boot</groupId>
-                <artifactId>mybatis-spring-boot-starter</artifactId>
-                <version>${mybatis-spring-boot-starter.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.github.pagehelper</groupId>
-                <artifactId>pagehelper</artifactId>
-                <version>${pagehelper.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.security</groupId>
-                <artifactId>spring-security-test</artifactId>
-                <version>${spring-security-test.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.rocketmq</groupId>
-                <artifactId>rocketmq-client</artifactId>
-                <version>${rocketmq.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.zaxxer</groupId>
-                <artifactId>HikariCP</artifactId>
-                <version>${hikaricp.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.xuxueli</groupId>
-                <artifactId>xxl-job-core</artifactId>
-                <version>${xx-ljob.version}</version>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
 
 </project>

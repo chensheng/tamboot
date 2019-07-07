@@ -1,11 +1,9 @@
-package com.tamboot.webapp.core;
-
-import com.github.pagehelper.Page;
+package com.tamboot.common.web;
 
 import java.io.Serializable;
 import java.util.List;
 
-public class PageAdapter implements Serializable {
+public class Pagination<T> implements Serializable {
     private int pageNum;
 
     private int pageSize;
@@ -14,19 +12,17 @@ public class PageAdapter implements Serializable {
 
     private int pages;
 
-    private List<?> result;
+    private List<T> result;
 
-    public PageAdapter() {
+    public Pagination() {
     }
 
-    public PageAdapter(Page<?> page) {
-        if (page != null) {
-            this.pageNum = page.getPageNum();
-            this.pageSize = page.getPageSize();
-            this.total = page.getTotal();
-            this.pages = page.getPages();
-            this.result = page.getResult();
-        }
+    public Pagination(int pageNum, int pageSize, long total, int pages, List<T> result) {
+        this.pageNum = pageNum;
+        this.pageSize = pageSize;
+        this.total = total;
+        this.pages = pages;
+        this.result = result;
     }
 
     public int getPageNum() {
@@ -61,11 +57,11 @@ public class PageAdapter implements Serializable {
         this.pages = pages;
     }
 
-    public List<?> getResult() {
+    public List<T> getResult() {
         return result;
     }
 
-    public void setResult(List<?> result) {
+    public void setResult(List<T> result) {
         this.result = result;
     }
 }
