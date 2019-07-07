@@ -1,4 +1,4 @@
-package com.tamboot.webapp.core;
+package com.tamboot.webapp.security;
 
 import com.tamboot.redis.core.TambootRedisTemplate;
 import org.springframework.data.redis.core.RedisTemplate;

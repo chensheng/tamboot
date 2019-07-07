@@ -1,6 +1,8 @@
 package com.tamboot.web.config;
 
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+import com.github.pagehelper.Page;
+import com.tamboot.web.core.*;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.web.servlet.WebMvcAutoConfiguration;
@@ -63,5 +65,11 @@ public class TambootWebAutoConfiguration {
     @Bean
     public ResponseBodyDecorateCenter responseBodyDecorateCenter(ApplicationContext applicationContext) {
         return new ResponseBodyDecorateCenter(applicationContext);
+    }
+
+    @Bean
+    @ConditionalOnClass(name = "com.github.pagehelper.Page")
+    public PaginationResponseBodyDecorator paginationResponseBodyDecorator() {
+        return new PaginationResponseBodyDecorator();
     }
 }

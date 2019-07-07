@@ -1,4 +1,6 @@
-package com.tamboot.web.config;
+package com.tamboot.web.core;
+
+import com.tamboot.common.web.ApiResponseType;
 
 public class BusinessException extends RuntimeException{
     private static final long serialVersionUID = -7710864994078530060L;
@@ -6,11 +8,11 @@ public class BusinessException extends RuntimeException{
     private String code;
 
     public BusinessException() {
-        this(TambootResponse.MSG_FAIL);
+        this(ApiResponseType.FAIL.getMsg());
     }
 
     public BusinessException(String msg) {
-        this(TambootResponse.CODE_FAIL, msg);
+        this(ApiResponseType.FAIL.getCode(), msg);
     }
 
     public BusinessException(String code, String msg) {

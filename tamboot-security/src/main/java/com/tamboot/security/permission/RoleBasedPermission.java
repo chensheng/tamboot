@@ -13,10 +13,13 @@ public class RoleBasedPermission implements Serializable {
 
     private List<String> roles;
 
+    public RoleBasedPermission() {
+    }
+
     public RoleBasedPermission(String urlAntPattern) {
         Assert.hasText(urlAntPattern, "urlAntPattern must not be empty");
         this.urlAntPattern = urlAntPattern;
-        roles = new ArrayList<>();
+        roles = new ArrayList<String>();
     }
 
     public RoleBasedPermission addRole(String role) {

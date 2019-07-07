@@ -1,15 +1,13 @@
 package com.tamboot.web.test;
 
-import com.tamboot.web.config.BusinessException;
-import org.junit.Test;
+import com.tamboot.web.annotation.IgnoreResponseWrapper;
+import com.tamboot.web.core.BusinessException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 
 @RestController
 @RequestMapping("/test")
@@ -54,5 +52,14 @@ public class TestController {
     @RequestMapping(path = "getTextPlain",  method = RequestMethod.GET, produces = {"text/plain; charset=UTF-8"})
     public String getTextPlain() {
         return "Tam Boot";
+    }
+
+    @GetMapping("/getIgnoreResponseWrapper")
+    @IgnoreResponseWrapper
+    public TestDto getIgnoreResponseWrapper() {
+        TestDto testDto = new TestDto();
+        testDto.setAge(1);
+        testDto.setUsername("Tam Boot");
+        return testDto;
     }
 }

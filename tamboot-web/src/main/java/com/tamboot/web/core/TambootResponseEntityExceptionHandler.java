@@ -1,6 +1,7 @@
-package com.tamboot.web.config;
+package com.tamboot.web.core;
 
 import com.tamboot.common.tools.base.ExceptionUtil;
+import com.tamboot.common.web.ApiResponseType;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.http.ResponseEntity;
@@ -36,16 +37,16 @@ public class TambootResponseEntityExceptionHandler {
         String code = except.getCode();
         String msg = except.getMessage();
         if (StringUtils.isEmpty(code)) {
-            code = TambootResponse.CODE_FAIL;
+            code = ApiResponseType.FAIL.getCode();
         }
         if (StringUtils.isEmpty(msg)) {
-            msg = TambootResponse.MSG_FAIL;
+            msg = ApiResponseType.FAIL.getMsg();
         }
         return ResponseEntity.ok(new TambootResponse(code, msg));
     }
 
     private ResponseEntity<TambootResponse> doHandleBindException(BindException except) {
-        String msg = TambootResponse.MSG_FAIL;
+        String msg = ApiResponseType.FAIL.getMsg();
 
         List<ObjectError> allErrors = except.getAllErrors();
         if (!CollectionUtils.isEmpty(allErrors)) {
@@ -61,7 +62,7 @@ public class TambootResponseEntityExceptionHandler {
     }
 
     private ResponseEntity<TambootResponse> doMethodArgumentNotValidException(MethodArgumentNotValidException except) {
-        String msg = TambootResponse.MSG_FAIL;
+        String msg = ApiResponseType.FAIL.getMsg();
 
         if (except.getBindingResult() == null) {
             return ResponseEntity.ok(TambootResponse.fail(msg));

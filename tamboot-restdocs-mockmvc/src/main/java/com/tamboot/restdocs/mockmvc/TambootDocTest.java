@@ -85,6 +85,7 @@ public abstract class TambootDocTest {
         List<FieldDescriptor> fieldDescriptorList = new ArrayList<FieldDescriptor>();
         fieldDescriptorList.add(fieldWithPath("code").type(JsonFieldType.STRING).description("状态码"));
         fieldDescriptorList.add(fieldWithPath("msg").type(JsonFieldType.STRING).description("提示消息"));
+        fieldDescriptorList.add(fieldWithPath("success").type(JsonFieldType.BOOLEAN).description("是否成功").optional());
         if (fieldDescriptors != null) {
             fieldDescriptorList.addAll(Arrays.asList(fieldDescriptors));
         }

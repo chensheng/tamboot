@@ -73,4 +73,10 @@ public class TambootWebTests {
     public void testGetTextPlain() throws Exception {
         this.mvc.perform(get("/test/getTextPlain")).andExpect(content().string("Tam Boot"));
     }
+
+    @Test
+    public void testGetIgnoreResponseWrapper() throws Exception {
+        this.mvc.perform(get("/test/getIgnoreResponseWrapper").accept(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(content().json("{\"username\":\"Tam Boot\",\"age\":1}"));
+    }
 }

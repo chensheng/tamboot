@@ -1,4 +1,4 @@
-package com.tamboot.webapp.core;
+package com.tamboot.mybatis.core;
 
 import com.tamboot.mybatis.annotation.IgnoreInInsertUpdateSql;
 
@@ -6,6 +6,8 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class BaseModel implements Serializable {
+    private static final long serialVersionUID = -4438154607826453448L;
+
     @IgnoreInInsertUpdateSql
     protected Long id;
 
