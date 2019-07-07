@@ -5,7 +5,7 @@
     <parent>
         <artifactId>tamboot-dependencies</artifactId>
         <groupId>com.tamboot</groupId>
-        <version>1.0.0-SNAPSHOT</version>
+        <version>1.2.0.RELEASE</version>
         <relativePath>../tamboot-dependencies</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
