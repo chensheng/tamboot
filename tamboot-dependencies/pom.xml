@@ -23,7 +23,7 @@
         <pagehelper.version>5.0.4</pagehelper.version>
         <servlet-api.version>3.1.0</servlet-api.version>
         <spring-security-test.version>5.1.5.RELEASE</spring-security-test.version>
-        <rocketmq.version>4.2.0</rocketmq.version>
+        <rocketmq.version>4.4.0</rocketmq.version>
         <hikaricp.version>3.3.1</hikaricp.version>
         <xx-ljob.version>2.0.1</xx-ljob.version>
         <mysql-connector-java.version>8.0.15</mysql-connector-java.version>
