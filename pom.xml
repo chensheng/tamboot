@@ -30,6 +30,7 @@
         <module>tamboot-mybatis-machineid</module>
         <module>tamboot-dependencies</module>
         <module>tamboot-starter</module>
+        <module>tamboot-rocketmq-client</module>
     </modules>
 
 </project>
