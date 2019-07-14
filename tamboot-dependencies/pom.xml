@@ -28,6 +28,7 @@
         <hikaricp.version>3.3.1</hikaricp.version>
         <xx-ljob.version>2.0.1</xx-ljob.version>
         <mysql-connector-java.version>8.0.15</mysql-connector-java.version>
+        <openfeign.version>10.2.3</openfeign.version>
     </properties>
 
     <dependencyManagement>
@@ -99,6 +100,11 @@
                 <groupId>mysql</groupId>
                 <artifactId>mysql-connector-java</artifactId>
                 <version>${mysql-connector-java.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.openfeign</groupId>
+                <artifactId>feign-core</artifactId>
+                <version>${openfeign.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

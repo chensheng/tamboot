@@ -1,6 +1,8 @@
 package com.tamboot.common.tools.mapper;
 
 import java.io.IOException;
+import java.io.Reader;
+import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.Map;
 
@@ -121,6 +123,19 @@ public class JsonMapper {
 			return (T) mapper.readValue(jsonString, javaType);
 		} catch (IOException e) {
 			logger.warn("parse json string error:" + jsonString, e);
+			return null;
+		}
+	}
+
+	public <T> T fromJson(Reader reader, Type type) {
+		if (reader == null || type == null) {
+			return null;
+		}
+
+		try {
+			return (T) mapper.readValue(reader, mapper.constructType(type));
+		} catch (IOException e) {
+			logger.warn("parse json error", e);
 			return null;
 		}
 	}

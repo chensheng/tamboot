@@ -75,6 +75,11 @@
                 <artifactId>tamboot-xxljob-client</artifactId>
                 <version>${revision}</version>
             </dependency>
+            <dependency>
+                <groupId>com.tamboot</groupId>
+                <artifactId>tamboot-http</artifactId>
+                <version>${revision}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
