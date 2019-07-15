@@ -19,6 +19,8 @@ Tamboot是一个基于 [Spring Boot](https://spring.io/projects/spring-boot)的J
 * [tamboot-xxljob-client](#tamboot-xxljob-client)
 * [tamboot-restdocs-mockmvc](#tamboot-restdocs-mockmvc)
 * [tamboot-redis](#tamboot-redis)
+* [tamboot-rocketmq-client](#tamboot-rocketmq-client)
+* [tamboot-http](#tamboot-http)
 
 ### tamboot-common
 该模块包含了常用的工具类以及框架的基础接口，其它模块均依赖该模块。
@@ -479,6 +481,326 @@ releaseLock(T namespace, String key) | 手动释放锁。在某些场景下，�
 lockInDuration(T namespace, String key, Duration duration, long concurrent) | 尝试获取锁。该锁表示某个时间段内最多允许n个线程或进程同时获得锁。
 
 
+### tamboot-rocketmq-client
+
+tamboot-rocketmq-client模块基于[rocketmq-spring](https://github.com/apache/rocketmq-spring)，封装了普通消息、有序消息、延时消息、事务消息的收发方法。
+
+`最小配置`
+
+在application.yml中添加以下配置:
+
+```yml
+rocketmq:
+  name-server: 127.0.0.1:9876
+  producer:
+    group: gid-sample-producer
+```
+
+`普通消息`
+
+发送消息:
+
+```java
+@Autowired
+private TambootRocketMQTemplate rocketMQTemplate;
+
+public void sendSimpleMsg() {
+    SimpleMessage msg = new SimpleMessage();
+    msg.setOrderNo("NO3987359834759348534");
+    msg.setAmount(new BigDecimal(200));
+    msg.setOrderTime(new Date());
+    msg.setUserId(888888l);
+    rocketMQTemplate.syncSend("simple-topic", msg);
+}
+```
+
+接收消息（@RocketMQMessageListener中的topic、consumerGroup支持占位符${}）:
+
+```java
+@Component
+@RocketMQMessageListener(topic = "simple-topic", consumerGroup = "gid-sample-consumer_simple-topic")
+public class SimpleMessageListener implements RocketMQListener<SimpleMessage>, RocketMQPushConsumerLifecycleListener {
+    private static final Logger logger = LoggerFactory.getLogger(SimpleMessageListener.class);
+
+    private AtomicInteger consumeTimes = new AtomicInteger(0);
+
+    @Autowired
+    private AppRocketMQProperties appRocketMQProperties;
+
+    public void onMessage(SimpleMessage orderMessage) {
+        if (consumeTimes.getAndIncrement() % 2 == 0) {
+            logger.error("try to consume later");
+            throw new BusinessException("consume later");
+        }
+        logger.info("receive simple message: {}", JsonMapper.nonNullMapper().toJson(orderMessage));
+    }
+
+    public void prepareStart(DefaultMQPushConsumer consumer) {
+        //可以在此处，根据配置文件信息来设置消息消费者的参数
+        consumer.setConsumeThreadMin(appRocketMQProperties.getSimpleMessage().getConsumeThreadMin());
+        consumer.setConsumeThreadMax(appRocketMQProperties.getSimpleMessage().getConsumeThreadMax());
+    }
+}
+```
+
+
+`有序消息`
+
+发送消息：
+
+```java
+@Autowired
+private TambootRocketMQTemplate rocketMQTemplate;
+
+public void sendOrderly() {
+    for (int orderNo = 1; orderNo < 6; orderNo++) {
+        for (int sequence = 1; sequence < 5; sequence ++ ) {
+            OrderlyMessage msg = new OrderlyMessage();
+            msg.setOrderNo("NO" + orderNo);
+            msg.setSequence(sequence);
+            //第3个能数"orderNo"表示：orderNo字段相同的消息保持有序
+            rocketMQTemplate.syncSendOrderly("order-topic", msg, "orderNo");
+        }
+    }
+}
+```
+
+接收消息：
+
+```java
+@Component
+@RocketMQMessageListener(topic = "order-topic", consumerGroup = "gid-sample-consumer_order-topic", consumeMode = ConsumeMode.ORDERLY)
+public class OrderlyMessageListener implements RocketMQListener<OrderlyMessage>,RocketMQPushConsumerLifecycleListener {
+    private static final Logger logger = LoggerFactory.getLogger(OrderlyMessageListener.class);
+
+    @Autowired
+    private AppRocketMQProperties appRocketMQProperties;
+
+    @Override
+    public void onMessage(OrderlyMessage message) {
+        logger.info("receive orderly message: {}", JsonMapper.nonNullMapper().toJson(message));
+    }
+
+    @Override
+    public void prepareStart(DefaultMQPushConsumer consumer) {
+        consumer.setConsumeThreadMin(appRocketMQProperties.getOrderlyMessage().getConsumeThreadMin());
+        consumer.setConsumeThreadMax(appRocketMQProperties.getOrderlyMessage().getConsumeThreadMax());
+    }
+}
+```
+
+`延时消息`
+
+延时消息会在发送消息后的某个时间被消息。以取消超时未付款订单为例：用户下单后，30分钟未付款则取消订单，此时可发送一条取消订单的延时消息，消费者30分钟后收到消息，判断是否已付款，如果未付款则取消订单。
+
+发送消息：
+
+```java
+@Autowired
+private TambootRocketMQTemplate rocketMQTemplate;
+
+public void sendDelay() {
+    DelayMessage msg = new DelayMessage();
+    msg.setCreateTime(new Date());
+    rocketMQTemplate.syncSendWithDelay("delay-topic", msg, MessageDelayLevel.DELAY_30S);
+}
+```
+
+接收消息：
+
+参考接收普通消息。
+
+
+`事务消息`
+
+事务消息一般用于保证多个系统间的数据一致性。以订单系统与库存系统的交互为例：用户下单成功后需扣减库存，些时可在下单的逻辑中添加发送减库存事务消息的代码，然后通过回查消息接口来判断下单的逻辑是否已成功，如果成功则提交事务消息，库存系统就能接收到减库存的事务消息来触发减库存操作，反之则回滚事务消息。
+
+发送消息：
+
+发送消息后，消息处于半事务状态，该状态下消息不会被消费者消费。
+
+```java
+@Autowired
+private TambootRocketMQTemplate rocketMQTemplate;
+
+public void sendTransaction() {
+    TransactionMessage payload = new TransactionMessage();
+    payload.setSequence(1);
+    Message<TransactionMessage> message = MessageBuilder
+        .withPayload(payload)
+        .setHeader("msgType", TransactionMessage.class.getName())
+        .setHeader("orderNo", "NO789798798798987")
+        .build();
+    rocketMQTemplate.syncSendInTransaction("transaction-topic", message, null);
+}
+```
+
+接收消息：
+
+可参考接收普通消息。
+
+回查消息：
+
+通过回查消息，来确认消息是否能被消费者消费。
+
+```java
+@RocketMQTransactionListener
+public class ProducerTransactionListener implements RocketMQLocalTransactionListener {
+    private static final Logger logger = LoggerFactory.getLogger(ProducerTransactionListener.class);
+
+    private AtomicInteger checkTimes = new AtomicInteger(1);
+
+    @Override
+    public RocketMQLocalTransactionState executeLocalTransaction(Message msg, Object arg) {
+        return RocketMQLocalTransactionState.UNKNOWN;
+    }
+
+    @Override
+    public RocketMQLocalTransactionState checkLocalTransaction(Message msg) {
+        MessageHeaders headers = msg.getHeaders();
+        String msgType = (String) headers.get("msgType");
+
+        if (TransactionMessage.class.getName().equals(msgType)) {
+            return checkForTransactionMessage(headers);
+        } else {
+            return RocketMQLocalTransactionState.ROLLBACK;
+        }
+    }
+
+    private RocketMQLocalTransactionState checkForTransactionMessage(MessageHeaders headers) {
+        String orderNo = (String) headers.get("orderNo");
+        int times = checkTimes.getAndIncrement();
+        logger.info("check transaction message, times: {}, orderNo: {}", times, orderNo);
+        if (times % 5 == 0) {
+            return RocketMQLocalTransactionState.COMMIT;
+        }
+
+        return RocketMQLocalTransactionState.UNKNOWN;
+    }
+}
+```
+
+`更多功能`
+
+更多功能可调用`TambootRocketMQTemplate#getDelegate()`。
+
+
+### tamboot-http
+
+tamboot-http模块基于[feign](https://github.com/OpenFeign/feign)和[Apache Http Client](http://hc.apache.org/httpcomponents-client-4.5.x/index.html)，通过注解的方式来定义http接口请求。
+
+`最小配置`
+
+在application.yml中添加以下配置（添加要扫描的包）
+
+```yml
+tamboot:
+  http:
+    basePackage: com.tamboot.sample.http
+```
+
+`GET请求（简单参数）`
+
+```java
+@HttpApi(url = "http://localhost:7071")
+public interface TestApi {
+    @RequestLine("GET /api/getSimple?username={username}")
+    TestResponse getSimple(@Param("username") String username);
+}
+```
+
+`GET请求（复杂参数）`
+
+```java
+@HttpApi(url = "http://localhost:7071")
+public interface TestApi {
+    @RequestLine("GET /api/getComplex")
+    TestResponse getComplex(@QueryMap TestGetQuery query);
+}
+```
+
+`POST请求（json请求体）`
+
+```java
+@HttpApi(url = "http://localhost:7071")
+public interface TestApi {
+    @RequestLine("POST /api/postJson")
+    @Headers("Content-Type: application/json")
+    TestResponse postJson(TestPostBody body);
+}
+```
+
+`POST请求（简单form请求体）`
+
+```java
+@HttpApi(url = "http://localhost:7071")
+public interface TestApi {
+    @RequestLine("POST /api/postSimpleForm")
+    @Headers("Content-Type: application/x-www-form-urlencoded")
+    TestResponse postSimpleForm(@Param("username") String username, @Param("age") Integer age);
+}
+```
+
+`POST请求（复杂form请求体）`
+
+```java
+@HttpApi(url = "http://localhost:7071", encoder = DefaultFormEncoder.class)
+public interface TestFormApi {
+    @RequestLine("POST /api/postComplexForm")
+    @Headers("Content-Type: application/x-www-form-urlencoded")
+    TestResponse postComplexForm(TestPostBody body);
+}
+```
+
+`调用api`
+
+```java
+@Autowired
+private TestApi testApi;
+
+public TestResponse test() {
+    return testApi.getSimple("hello");
+}
+```
+
+`请求拦截器`
+
+定义拦截器:
+
+```java
+public class TokenInterceptor implements RequestInterceptor {
+    @Override
+    public void apply(RequestTemplate template) {
+        template.header("token", "123456");
+    }
+}
+```
+
+使用拦截器:
+
+```java
+@HttpApi(url = "http://127.0.0.1:7071", interceptors = {TokenInterceptor.class})
+public interface TestSecurityApi {
+
+    @RequestLine("GET /security-api/get?username={username}")
+    ApiResponse<TestResponse> get(@Param("username") String username);
+}
+```
+
+`@HttpApi参数`
+
+参数|说明|类型|默认值
+-----|-----|-----|-----
+url|必填，请求API的url|String
+name|API的名称，必须唯一|String|接口的全限定名
+encoder|API请求体的编码方式|Class|DefaultJacksonEncoder.class
+decoder|API返回值的解码方式|Class|DefaultJacksonDecoder.class
+interceptors|请求拦截器|Class[]|
+retryer|重试机制|Class|
+contract|注解解析策略|Class|
+-|-|-|-
+
+
 ## 配置信息
 
 * [tamboot-mybatis配置](#tamboot-mybatis配置)
@@ -487,6 +809,8 @@ lockInDuration(T namespace, String key, Duration duration, long concurrent) | �
 * [tamboot-rocketmq配置](#tamboot-rocketmq配置)
 * [tamboot-job配置](#tamboot-job配置)
 * [tamboot-xxljob-client配置](#tamboot-xxljob-client配置)
+* [tamboot-rocketmq-client配置](#tamboot-rocketmq-client配置)
+* [tamboot-http配置](#tamboot-http配置)
 
 ### tamboot-mybatis配置
 参数|说明|类型|默认值
@@ -547,3 +871,22 @@ tamboot.xxljob.client.port|执行器端口号 [选填]：小于等于0则自动�
 tamboot.xxljob.client.accessToken|执行器通讯TOKEN [选填]：非空时启用；|String|
 tamboot.xxljob.client.logPath|执行器运行日志文件存储磁盘路径 [选填] ：需要对该路径拥有读写权限；为空则使用默认路径；|String|
 tamboot.xxljob.client.logRetentionDays|执行器日志保存天数 [选填] ：值大于3时生效，启用执行器Log文件定期清理功能，否则不生效；|Integer|
+
+### tamboot-rocketmq-client配置
+
+参数|说明|类型|默认值
+----|----|----|----
+rocketmq.name-server|name server地址|String|
+rocketmq.producer.group|默认消息生产者组|String|
+
+### tamboot-http配置
+
+参数|说明|类型|默认值
+-----|-----|-----|-----
+tamboot.http.basePackage|扫描该包下面有@HttpApi注解的接口|String|
+tamboot.http.httpclient.maxConnTotal|最大连接数|Integer|200
+tamboot.http.httpclient.maxConnPerRoute|单个线路最大连接数|Integer|50
+tamboot.http.httpclient.tcpNoDelay|设置是否启用Nagle算法，设置true后禁用Nagle算法。Nagle算法试图通过减少分片的数量来节省带宽。当应用程序希望降低网络延迟并提高性能时，它们可以关闭Nagle算法，这样数据将会更早地发送，但是增加了网络消耗。|Boolean|true
+tamboot.http.httpclient.socketTimeoutMillis|连接超过该时间无数据交互则被视为超时|Integer|30000
+tamboot.http.httpclient.connectTimeoutMillis|尝试建立连接的超时时间|Integer|10000
+tamboot.http.httpclient.connectionRequestTimeoutMillis|从连接池中获取连接的超时时间|Integer|5000
