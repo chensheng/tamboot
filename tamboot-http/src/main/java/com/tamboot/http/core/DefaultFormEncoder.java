@@ -1,6 +1,5 @@
 package com.tamboot.http.core;
 
-import com.tamboot.common.tools.mapper.JsonMapper;
 import com.tamboot.common.tools.time.DateFormatUtil;
 import feign.Request;
 import feign.RequestTemplate;
@@ -8,34 +7,30 @@ import feign.Util;
 import feign.codec.EncodeException;
 import feign.codec.Encoder;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.util.Date;
-import java.util.Map;
 
-public class DefaultJacksonEncoder implements Encoder {
+public class DefaultFormEncoder implements Encoder {
     private static final String FORM_DATETIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
     @Override
     public void encode(Object object, Type bodyType, RequestTemplate template) throws EncodeException {
-        if (bodyType == MAP_STRING_WILDCARD) {
-            this.encodeForm(object, bodyType, template);
+        if (object == null) {
             return;
         }
 
-        String bodyTemplate = JsonMapper.nonNullMapper().toJson(object);
-        template.body(Request.Body.bodyTemplate(bodyTemplate, Util.UTF_8));
-    }
-
-    private void encodeForm(Object object, Type bodyType, RequestTemplate template) {
-        if (object == null || !(object instanceof Map)) {
-            return;
-        }
-
-        Map<String, Object> form = (Map<String, Object>) object;
+        Field[] fields = object.getClass().getDeclaredFields();
         StringBuilder formBody = new StringBuilder();
-        for (Map.Entry<String, Object> entry : form.entrySet()) {
-            String name = entry.getKey();
-            Object value = entry.getValue();
+        for (Field field : fields) {
+            field.setAccessible(true);
+            String name = field.getName();
+            Object value = null;
+            try {
+                value = field.get(object);
+            } catch (IllegalAccessException e) {
+                continue;
+            }
             if (value == null) {
                 continue;
             }
