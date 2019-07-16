@@ -851,6 +851,21 @@ public class TestServiceImpl implements TestService {
 }
 ```
 
+`接收消息`
+
+```java
+@Component
+public class TextMessageListener extends MessageListener<TextInboundMessage> {
+    private static final Logger logger = LoggerFactory.getLogger(TextMessageListener.class);
+
+    @Override
+    protected ReplyMessage onMessage(TextInboundMessage message) {
+        logger.info("Receive text message: {}", message.toString());
+        return null;
+    }
+}
+```
+
 `更多功能`
 
 更多功能可参考[wechatty-project](https://github.com/chensheng/wechatty-project)。
