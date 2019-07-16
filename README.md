@@ -21,6 +21,7 @@ Tamboot是一个基于 [Spring Boot](https://spring.io/projects/spring-boot)的J
 * [tamboot-redis](#tamboot-redis)
 * [tamboot-rocketmq-client](#tamboot-rocketmq-client)
 * [tamboot-http](#tamboot-http)
+* [tamboot-wechatty](#tamboot-wechatty)
 
 ### tamboot-common
 该模块包含了常用的工具类以及框架的基础接口，其它模块均依赖该模块。
@@ -501,16 +502,20 @@ rocketmq:
 发送消息:
 
 ```java
-@Autowired
-private TambootRocketMQTemplate rocketMQTemplate;
+@Service
+public class TestServiceImpl implements TestService { 
+    @Autowired
+    private TambootRocketMQTemplate rocketMQTemplate;
 
-public void sendSimpleMsg() {
-    SimpleMessage msg = new SimpleMessage();
-    msg.setOrderNo("NO3987359834759348534");
-    msg.setAmount(new BigDecimal(200));
-    msg.setOrderTime(new Date());
-    msg.setUserId(888888l);
-    rocketMQTemplate.syncSend("simple-topic", msg);
+    @Override
+    public void sendSimpleMsg() {
+        SimpleMessage msg = new SimpleMessage();
+        msg.setOrderNo("NO3987359834759348534");
+        msg.setAmount(new BigDecimal(200));
+        msg.setOrderTime(new Date());
+        msg.setUserId(888888l);
+        rocketMQTemplate.syncSend("simple-topic", msg);
+    }
 }
 ```
 
@@ -526,7 +531,8 @@ public class SimpleMessageListener implements RocketMQListener<SimpleMessage>, R
 
     @Autowired
     private AppRocketMQProperties appRocketMQProperties;
-
+    
+    @Override
     public void onMessage(SimpleMessage orderMessage) {
         if (consumeTimes.getAndIncrement() % 2 == 0) {
             logger.error("try to consume later");
@@ -535,6 +541,7 @@ public class SimpleMessageListener implements RocketMQListener<SimpleMessage>, R
         logger.info("receive simple message: {}", JsonMapper.nonNullMapper().toJson(orderMessage));
     }
 
+    @Override
     public void prepareStart(DefaultMQPushConsumer consumer) {
         //可以在此处，根据配置文件信息来设置消息消费者的参数
         consumer.setConsumeThreadMin(appRocketMQProperties.getSimpleMessage().getConsumeThreadMin());
@@ -549,17 +556,21 @@ public class SimpleMessageListener implements RocketMQListener<SimpleMessage>, R
 发送消息：
 
 ```java
-@Autowired
-private TambootRocketMQTemplate rocketMQTemplate;
+@Service
+public class TestServiceImpl implements TestService {
+    @Autowired
+    private TambootRocketMQTemplate rocketMQTemplate;
 
-public void sendOrderly() {
-    for (int orderNo = 1; orderNo < 6; orderNo++) {
-        for (int sequence = 1; sequence < 5; sequence ++ ) {
-            OrderlyMessage msg = new OrderlyMessage();
-            msg.setOrderNo("NO" + orderNo);
-            msg.setSequence(sequence);
-            //第3个能数"orderNo"表示：orderNo字段相同的消息保持有序
-            rocketMQTemplate.syncSendOrderly("order-topic", msg, "orderNo");
+    @Override
+    public void sendOrderly() {
+        for (int orderNo = 1; orderNo < 6; orderNo++) { 
+            for (int sequence = 1; sequence < 5; sequence ++ ) { 
+                OrderlyMessage msg = new OrderlyMessage();
+                msg.setOrderNo("NO" + orderNo);
+                msg.setSequence(sequence);
+                //第3个参数"orderNo"表示：orderNo字段相同的消息保持有序
+                rocketMQTemplate.syncSendOrderly("order-topic", msg, "orderNo");
+            } 
         }
     }
 }
@@ -596,13 +607,17 @@ public class OrderlyMessageListener implements RocketMQListener<OrderlyMessage>,
 发送消息：
 
 ```java
-@Autowired
-private TambootRocketMQTemplate rocketMQTemplate;
-
-public void sendDelay() {
-    DelayMessage msg = new DelayMessage();
-    msg.setCreateTime(new Date());
-    rocketMQTemplate.syncSendWithDelay("delay-topic", msg, MessageDelayLevel.DELAY_30S);
+@Service
+public class TestServiceImpl implements TestService {
+    @Autowired
+    private TambootRocketMQTemplate rocketMQTemplate;
+    
+    @Override
+    public void sendDelay() { 
+        DelayMessage msg = new DelayMessage();
+        msg.setCreateTime(new Date());
+        rocketMQTemplate.syncSendWithDelay("delay-topic", msg, MessageDelayLevel.DELAY_30S);
+    }
 }
 ```
 
@@ -620,18 +635,22 @@ public void sendDelay() {
 发送消息后，消息处于半事务状态，该状态下消息不会被消费者消费。
 
 ```java
-@Autowired
-private TambootRocketMQTemplate rocketMQTemplate;
+@Service
+public class TestServiceImpl implements TestService {
+    @Autowired
+    private TambootRocketMQTemplate rocketMQTemplate;
 
-public void sendTransaction() {
-    TransactionMessage payload = new TransactionMessage();
-    payload.setSequence(1);
-    Message<TransactionMessage> message = MessageBuilder
-        .withPayload(payload)
-        .setHeader("msgType", TransactionMessage.class.getName())
-        .setHeader("orderNo", "NO789798798798987")
-        .build();
-    rocketMQTemplate.syncSendInTransaction("transaction-topic", message, null);
+    @Override
+    public void sendTransaction() { 
+        TransactionMessage payload = new TransactionMessage();
+        payload.setSequence(1);
+        Message<TransactionMessage> message = MessageBuilder
+            .withPayload(payload)
+            .setHeader("msgType", TransactionMessage.class.getName())
+            .setHeader("orderNo", "NO789798798798987")
+            .build();
+        rocketMQTemplate.syncSendInTransaction("transaction-topic", message, null);
+    }
 }
 ```
 
@@ -755,11 +774,15 @@ public interface TestFormApi {
 `调用api`
 
 ```java
-@Autowired
-private TestApi testApi;
-
-public TestResponse test() {
-    return testApi.getSimple("hello");
+@Service
+public class TestServiceImpl implements TestService {
+    @Autowired
+    private TestApi testApi;
+    
+    @Override
+    public TestResponse test() { 
+        return testApi.getSimple("hello");
+    }
 }
 ```
 
@@ -801,6 +824,38 @@ contract|注解解析策略|Class|
 -|-|-|-
 
 
+### tamboot-wechatty
+
+tamboot-wechatty模块基于[wechatty-project](https://github.com/chensheng/wechatty-project)，实现了springboot的自动配置功能。
+
+`最小配置`
+
+```yml
+tamboot:
+  wechatty:
+    appId: wxc1234567890
+    appSecret: 7788abc789789ccb878aaas
+```
+
+`调用MpAppContext`
+
+```java
+@Service
+public class TestServiceImpl implements TestService {
+    @Autowired
+    private MpAppContext mpAppContext;
+
+    public UserInfoQuery.UserInfoResponse getUserInfo() {
+        return mpAppContext.getUserInfoQuery().get("o_JDMMDSD23WrzHwWJjbBUCWYUw");
+    }
+}
+```
+
+`更多功能`
+
+更多功能可参考[wechatty-project](https://github.com/chensheng/wechatty-project)。
+
+
 ## 配置信息
 
 * [tamboot-mybatis配置](#tamboot-mybatis配置)
@@ -811,6 +866,7 @@ contract|注解解析策略|Class|
 * [tamboot-xxljob-client配置](#tamboot-xxljob-client配置)
 * [tamboot-rocketmq-client配置](#tamboot-rocketmq-client配置)
 * [tamboot-http配置](#tamboot-http配置)
+* [tamboot-wechatty配置](#tamboot-wechatty配置)
 
 ### tamboot-mybatis配置
 参数|说明|类型|默认值
@@ -890,3 +946,35 @@ tamboot.http.httpclient.tcpNoDelay|设置是否启用Nagle算法，设置true后
 tamboot.http.httpclient.socketTimeoutMillis|连接超过该时间无数据交互则被视为超时|Integer|30000
 tamboot.http.httpclient.connectTimeoutMillis|尝试建立连接的超时时间|Integer|10000
 tamboot.http.httpclient.connectionRequestTimeoutMillis|从连接池中获取连接的超时时间|Integer|5000
+
+
+### tamboot-wechatty配置
+
+参数|说明|类型|默认值
+-----|-----|-----|-----
+tamboot.wechatty.appId|必填，公众号appId，可在公众号后台查看。|String|
+tamboot.wechatty.appSecret|必填，公众号的appSecret，可在公众号后台查看。|String|
+tamboot.wechatty.token|必填，公众号的token，可在公众号后台查看。|String|
+tamboot.wechatty.aesKey|必填，加密用的key， 可在公众号后台查看。|String|
+tamboot.wechatty.enableCryptedMode|是否开启回调加密模式，默认true。如果开启则要下载[JCE无限制权限策略文件](http://www.oracle.com/technetwork/java/javase/downloads/jce-7-download-432124.html),覆盖jdk中的相关文件，具体可查看[微信常见错误举例](https://open.weixin.qq.com/cgi-bin/showdocument?action=dir_list&t=resource/res_list&verify=1&id=open1419318482&lang=zh_CN)。|Boolean|true
+tamboot.wechatty.autoUpdateAccessToken|出现access_token相关错误时是否自动更新access_token，默认false，应用可自己通过定时任务来更新。|Boolean|false
+tamboot.wechatty.accessTokenStrategyClass|access_token存取策略，默认是space.chensheng.wechatty.common.http.MemoryAccessTokenStrategy，将access_token存在内存中，应用可实现自己的存取策略，比如存在数据库中。|String|space.chensheng.wechatty.common.http.MemoryAccessTokenStrategy
+tamboot.wechatty.payKey|微信支付key|String|
+tamboot.wechatty.payCertFile|微信支付证书文件路径|String|
+tamboot.wechatty.payCertPassword|微信支付证书密码|String|
+tamboot.wechatty.payMchId|微信支付商户id|String|
+tamboot.wechatty.payClientIp|调用支付的机器ip|String|
+tamboot.wechatty.payNotifyUrl|微信支付付款回调地址|String|
+tamboot.wechatty.refundNotifyUrl|微信支付退款回调地址|String|
+tamboot.wechatty.poolingHttpProxyEnable|是否通过代理服务器给微信服务器必请求，默认false|Boolean|false
+tamboot.wechatty.poolingHttpProxyHostname|代理服务器的hostname，比如www.chensheng.space|String|
+tamboot.wechatty.poolingHttpProxyPort|代理服务器端口|String|
+tamboot.wechatty.poolingHttpProxyUsername|代理服务器用户名|String|
+tamboot.wechatty.poolingHttpProxyPassword|代理服务器密码|String|
+tamboot.wechatty.poolingHttpMaxPerRoute|http连接池每条链路最大并发连接数，默认为50|Integer|50
+tamboot.wechatty.poolingHttpMaxTotal|http连接池最大并发连接数，默认200|Integer|200
+tamboot.wechatty.poolingHttpSocketTimeoutMillis|socket超时毫秒数，默认10000|Integer|10000
+tamboot.wechatty.poolingHttpConnectTimeoutMillis|连接到微信服务器超时毫秒数，默认10000|Integer|10000
+tamboot.wechatty.poolingHttpConnectionRequestTimeoutMillis|从htttp连接池获取连接超时毫秒数，默认10000|Integer|10000
+tamboot.wechatty.poolingHttpTcpNoDelay|是否开启tpcNoDelay,默认true|Boolean|true
+

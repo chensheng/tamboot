@@ -32,6 +32,7 @@
         <module>tamboot-starter</module>
         <module>tamboot-rocketmq-client</module>
         <module>tamboot-http</module>
+        <module>tamboot-wechatty</module>
     </modules>
 
 </project>
