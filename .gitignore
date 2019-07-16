@@ -4,6 +4,10 @@
 /.project
 /.idea/
 *.iml
+**/target/
+**/.classpath
+**/.project
+**/*.iml
 
 # ---> Java
 # Compiled class file
