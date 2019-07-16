@@ -29,6 +29,7 @@
         <xx-ljob.version>2.0.1</xx-ljob.version>
         <mysql-connector-java.version>8.0.15</mysql-connector-java.version>
         <openfeign.version>10.2.3</openfeign.version>
+        <wechatty.version>2.0.0</wechatty.version>
     </properties>
 
     <dependencyManagement>
@@ -105,6 +106,11 @@
                 <groupId>io.github.openfeign</groupId>
                 <artifactId>feign-core</artifactId>
                 <version>${openfeign.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>space.chensheng.wechatty</groupId>
+                <artifactId>wechatty-mp</artifactId>
+                <version>${wechatty.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
