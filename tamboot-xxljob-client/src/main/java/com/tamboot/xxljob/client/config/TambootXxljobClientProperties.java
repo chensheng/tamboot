@@ -3,7 +3,7 @@ package com.tamboot.xxljob.client.config;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @ConfigurationProperties(prefix = "tamboot.xxljob.client")
-public class TambootXxjobClientProperties {
+public class TambootXxljobClientProperties {
     private String appName;
 
     private String adminAddresses;

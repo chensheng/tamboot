@@ -6,11 +6,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@EnableConfigurationProperties(TambootXxjobClientProperties.class)
+@EnableConfigurationProperties(TambootXxljobClientProperties.class)
 public class TambootXxljobClientAutoConfiguration {
 
     @Bean(initMethod = "start", destroyMethod = "destroy")
-    public XxlJobSpringExecutor xxlJobSpringExecutor(TambootXxjobClientProperties properties) {
+    public XxlJobSpringExecutor xxlJobSpringExecutor(TambootXxljobClientProperties properties) {
         XxlJobSpringExecutor executor = new XxlJobSpringExecutor();
         executor.setAppName(properties.getAppName());
         executor.setAdminAddresses(properties.getAdminAddresses());
