@@ -9,7 +9,7 @@ public class TambootMybatisProperties {
 
     private boolean throwVersionLockException;
 
-    private SnowFlake snowFlake;
+    private SnowFlake snowFlake = new SnowFlake();
 
     public boolean getIgnoreInterceptor() {
         return ignoreInterceptor;
