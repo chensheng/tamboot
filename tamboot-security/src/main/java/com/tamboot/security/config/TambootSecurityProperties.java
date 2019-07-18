@@ -20,8 +20,6 @@ public class TambootSecurityProperties {
 
     private List<RoleBasedPermission> roleBasedPermissions;
 
-    private boolean useRedisRepo;
-
     public String[] getIgnoringAntMatchers() {
         return ignoringAntMatchers;
     }
@@ -76,14 +74,6 @@ public class TambootSecurityProperties {
 
     public void setRoleBasedPermissions(List<RoleBasedPermission> roleBasedPermissions) {
         this.roleBasedPermissions = roleBasedPermissions;
-    }
-
-    public boolean getUseRedisRepo() {
-        return useRedisRepo;
-    }
-
-    public void setUseRedisRepo(boolean useRedisRepo) {
-        this.useRedisRepo = useRedisRepo;
     }
 
     public static class RoleBasedPermission {
