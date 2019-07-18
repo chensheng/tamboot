@@ -1,7 +1,7 @@
 package com.tamboot.web.config;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
-import com.github.pagehelper.Page;
 import com.tamboot.web.core.*;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -17,6 +17,7 @@ import org.springframework.web.servlet.DispatcherServlet;
 
 import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
+import java.util.TimeZone;
 
 @Configuration
 @ConditionalOnClass({DispatcherServlet.class})
@@ -43,7 +44,9 @@ public class TambootWebAutoConfiguration {
         Jackson2ObjectMapperBuilder builder = new Jackson2ObjectMapperBuilder()
                 .json()
                 .failOnUnknownProperties(false)
+                .serializationInclusion(JsonInclude.Include.NON_NULL)
                 .serializerByType(Long.class, ToStringSerializer.instance)
+                .timeZone(TimeZone.getTimeZone("GMT+8"))
                 .dateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
         return new MappingJackson2HttpMessageConverter(builder.build());
     }
@@ -53,6 +56,9 @@ public class TambootWebAutoConfiguration {
         Jackson2ObjectMapperBuilder builder = new Jackson2ObjectMapperBuilder()
                 .xml()
                 .failOnUnknownProperties(false)
+                .serializationInclusion(JsonInclude.Include.NON_NULL)
+                .serializerByType(Long.class, ToStringSerializer.instance)
+                .timeZone(TimeZone.getTimeZone("GMT+8"))
                 .dateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
         return new MappingJackson2XmlHttpMessageConverter(builder.createXmlMapper(true).build());
     }
