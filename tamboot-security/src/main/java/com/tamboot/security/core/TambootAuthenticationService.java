@@ -63,7 +63,7 @@ public class TambootAuthenticationService {
         tokenRepositoryFactory.get().delete(token);
     }
 
-    public final void refresh(HttpServletRequest request) {
+    public final void refreshToken(HttpServletRequest request) {
         String token = tokenPresenterFactory.get(request).readFromRequest(request);
         int tokenExpirySeconds = properties.getTokenExpirySeconds();
         SecurityContext securityContext = SecurityContextHolder.getContext();
