@@ -47,11 +47,6 @@
             </dependency>
             <dependency>
                 <groupId>com.tamboot</groupId>
-                <artifactId>tamboot-rocketmq</artifactId>
-                <version>${revision}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.tamboot</groupId>
                 <artifactId>tamboot-rocketmq-client</artifactId>
                 <version>${revision}</version>
             </dependency>

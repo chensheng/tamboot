@@ -14,7 +14,6 @@ Tamboot是一个基于 [Spring Boot](https://spring.io/projects/spring-boot)的J
 * [tamboot-web](#tamboot-web)
 * [tamboot-security](#tamboot-security)
 * [tamboot-webapp](#tamboot-webapp)
-* [tamboot-rocketmq](#tamboot-rocketmq)
 * [tamboot-job](#tamboot-job)
 * [tamboot-xxljob-client](#tamboot-xxljob-client)
 * [tamboot-restdocs-mockmvc](#tamboot-restdocs-mockmvc)
@@ -151,49 +150,6 @@ public class WxmpServiceImpl implements WxmpService {
 ### tamboot-webapp
 该模块基于`tamboot-mybatis`、`tamboot-web`、`tamboot-security`的扩展点，实现了统一接口返回格式、基于redis的security信息存储、数据库通用字段自动处理等功能。开发者可基于该模块快速搭建系统，[Tamboot Admin](https://github.com/chensheng/tamboot-admin-back)就是基于该模块搭建的企业应用脚手架项目。
 
-### tamboot-rocketmq
-该模块封装了[rocketmq](http://rocketmq.apache.org/)客户端API，简化了mq消息收发的代码。
-
-###### 发送消息
-```java
-@Service
-public class RocketmqTestServiceImpl implements RocketmqTestService {
-    @Autowired
-    private SimpleMQProducer simpleProducer;
-
-    public SendResult send(String content) {
-        Message msg = new Message("testTopic", "testTag", content.getBytes(RemotingHelper.DEFAULT_CHARSET));
-        return simpleProducer.send(msg);
-    }
-}
-```
-
-###### 接收消息
-```java
-@RocketMQConsumer(consumerGroup = "testGroup", topic = "testTopic")
-public class TestTopicListener implements MessageListenerConcurrently {
-	private AtomicInteger consumeTimes = new AtomicInteger(0);
-
-	@Override
-	public ConsumeConcurrentlyStatus consumeMessage(List<MessageExt> msgs, ConsumeConcurrentlyContext context) {
-		if (consumeTimes.incrementAndGet() % 2 == 0) {
-			return ConsumeConcurrentlyStatus.RECONSUME_LATER;
-		}
-		
-		for (MessageExt msg : msgs) {
-			try {
-				String body = new String(msg.getBody(), RemotingHelper.DEFAULT_CHARSET);
-			} catch (UnsupportedEncodingException e) {
-				logger.error(ExceptionUtils.getStackTraceAsString(e));
-			}
-		}
-		
-		return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
-	}
-}
-```
-更多例子可参考`tamboot-sample`模块。
-
 ### tamboot-job
 该模块基于[quartz定时任务](http://www.quartz-scheduler.org/)，简化了定时任务创建的代码。
 
@@ -245,7 +201,7 @@ tamboot:
 * `JobDataRepository`扩展
 
 ###### JobDataRepository扩展
-`JobDataRepository`的功能是存储任务数据，默认的实现是`InMemoryJobDataRepository`，从配置文件中加载任务数据。开发者可以实现自己的`JobDataRepository`，比如从数据库中加载任务数据，具体可参考`tamboot-sample`模块的`DatabaseJobDataRepository`。
+`JobDataRepository`的功能是存储任务数据，默认的实现是`InMemoryJobDataRepository`，从配置文件中加载任务数据。开发者可以实现自己的`JobDataRepository`，比如从数据库中加载任务数据。
 
 ### tamboot-xxljob-client
 该模块封装了分布式任务调度平台[xxl-job](http://www.xuxueli.com/xxl-job/#/)的客户端，引入该模块，进行简单的配置就能使用。
@@ -255,7 +211,7 @@ tamboot:
 tamboot:
   xxljob:
     client:
-      appName: tamboot-sample
+      appName: xxljob-sample
       adminAddresses: http://127.0.0.1:8080/xxl-job-admin
 ```
 
