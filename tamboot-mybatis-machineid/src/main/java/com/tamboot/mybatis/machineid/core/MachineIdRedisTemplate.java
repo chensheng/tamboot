@@ -10,6 +10,6 @@ public class MachineIdRedisTemplate extends TambootRedisTemplate<MachineIdRedisN
 
     @Override
     protected String resolveNamespaceValue(MachineIdRedisNamespace namespace) {
-        return "tamboot:mybatis:machineId:" + namespace.getCode();
+        return "mybatis:" + namespace.getCode();
     }
 }

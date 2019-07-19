@@ -1,7 +1,7 @@
 package com.tamboot.mybatis.machineid.core;
 
 public enum MachineIdRedisNamespace {
-    DYNAMIC("dynamic", "dynamic machine id");
+    DYNAMIC("dynamicMachineId", "dynamic machine id");
 
     private String code;
 

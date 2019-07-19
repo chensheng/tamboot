@@ -1,5 +1,7 @@
 package com.tamboot.redis.core;
 
+import com.tamboot.common.tools.text.TextUtil;
+
 public class RedisKeyGenerator {
     private static final String SEPARATOR = ":";
 
@@ -9,11 +11,18 @@ public class RedisKeyGenerator {
             return key.toString();
         }
 
-        for (int i = 0; i<keyUnits.length; i++) {
-            if (i > 0) {
+        boolean isFirstKeyUnit = true;
+        for (String keyUnit : keyUnits) {
+            if (TextUtil.isEmpty(keyUnit)) {
+                continue;
+            }
+
+            if (isFirstKeyUnit) {
+                isFirstKeyUnit = false;
+            } else {
                 key.append(SEPARATOR);
             }
-            key.append(keyUnits[i]);
+            key.append(keyUnit);
         }
         return key.toString();
     }

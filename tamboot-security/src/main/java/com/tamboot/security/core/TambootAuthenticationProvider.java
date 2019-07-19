@@ -4,6 +4,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -33,6 +34,25 @@ public class TambootAuthenticationProvider extends DaoAuthenticationProvider {
                     "AbstractUserDetailsAuthenticationProvider.badCredentials",
                     "Bad credentials"));
         }
+    }
+
+    @Override
+    protected Authentication createSuccessAuthentication(Object principal, Authentication authentication, UserDetails user) {
+        Authentication successAuthentication = super.createSuccessAuthentication(principal, authentication, user);
+        if (successAuthentication == null) {
+            return null;
+        }
+
+        if (!UsernamePasswordAuthenticationToken.class.isAssignableFrom(successAuthentication.getClass())) {
+            return successAuthentication;
+        }
+
+        if (successAuthentication instanceof TambootUsernamePasswordAuthenticationToken) {
+            return successAuthentication;
+        }
+
+        UsernamePasswordAuthenticationToken usernamePasswordToken = (UsernamePasswordAuthenticationToken) successAuthentication;
+        return new TambootUsernamePasswordAuthenticationToken(usernamePasswordToken);
     }
 
     private static class LazyPasswordEncoder implements PasswordEncoder {

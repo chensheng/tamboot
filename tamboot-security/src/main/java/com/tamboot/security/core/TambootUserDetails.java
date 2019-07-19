@@ -1,7 +1,6 @@
 package com.tamboot.security.core;
 
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.util.Assert;
 
@@ -13,23 +12,26 @@ public class TambootUserDetails implements UserDetails {
 
 	private static final Collection<? extends GrantedAuthority> EMPTY_AUTHORITIES = new ArrayList<GrantedAuthority>(0);
 
-	private final Long userId;
+	private Long userId;
 
 	private String password;
 
-	private final String username;
+	private String username;
 
-	private final Set<GrantedAuthority> authorities;
+	private Set<GrantedAuthority> authorities;
 
-	private final Set<String> roles;
+	private Set<String> roles;
 
-	private final boolean accountNonExpired;
+	private boolean accountNonExpired;
 
-	private final boolean accountNonLocked;
+	private boolean accountNonLocked;
 
-	private final boolean credentialsNonExpired;
+	private boolean credentialsNonExpired;
 
-	private final boolean enabled;
+	private boolean enabled;
+
+	public TambootUserDetails() {
+	}
 
 	/**
 	 * Construct the <code>User</code> with the details
@@ -233,7 +235,7 @@ public class TambootUserDetails implements UserDetails {
 			List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>(roles.length);
 			for (String role : roles) {
 				Assert.isTrue(!role.startsWith("ROLE_"), role + " cannot start with ROLE_ (it is automatically added)");
-				authorities.add(new SimpleGrantedAuthority("ROLE_" + role));
+				authorities.add(new RoleGrantedAuthority("ROLE_" + role));
 			}
 			this.authorities = new ArrayList<GrantedAuthority>(authorities);
 			return this;

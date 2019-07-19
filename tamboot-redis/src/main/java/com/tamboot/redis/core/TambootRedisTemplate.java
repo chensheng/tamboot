@@ -1,6 +1,8 @@
 package com.tamboot.redis.core;
 
 import com.tamboot.common.tools.text.TextUtil;
+import org.springframework.context.EnvironmentAware;
+import org.springframework.core.env.Environment;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.util.Assert;
@@ -9,12 +11,27 @@ import java.time.Duration;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-public abstract class TambootRedisTemplate<T> {
+public abstract class TambootRedisTemplate<T> implements EnvironmentAware {
+    private static final String BASE_NAMESPACE_PROP_KEY = "spring.redis.namespace";
+
+    private static final String DEFAULT_BASE_NAMESPACE = "tamboot";
+
+    private Environment environment;
+
     protected RedisTemplate redisTemplate;
 
     public TambootRedisTemplate(RedisTemplate redisTemplate) {
         Assert.notNull(redisTemplate, "redisTemplate must not be null");
         this.redisTemplate = redisTemplate;
+    }
+
+    @Override
+    public void setEnvironment(Environment environment) {
+        this.environment = environment;
+    }
+
+    protected String resolveBaseNamespace() {
+        return environment.getProperty(BASE_NAMESPACE_PROP_KEY, DEFAULT_BASE_NAMESPACE);
     }
 
     /**
@@ -24,11 +41,17 @@ public abstract class TambootRedisTemplate<T> {
      */
     protected abstract String resolveNamespaceValue(T namespace);
 
+    private String generateFullNamespace(T namespace) {
+        String baseNamespace = resolveBaseNamespace();
+        String namespaceValue = resolveNamespaceValue(namespace);
+        return RedisKeyGenerator.generate(baseNamespace, namespaceValue);
+    }
+
     private String createKeyWithNamespace(T namespace, String key) {
         Assert.notNull(namespace, "namespace must not be null");
         Assert.notNull(key, "key must not be null");
-        String namespaceValue = resolveNamespaceValue(namespace);
-        return RedisKeyGenerator.generate(namespaceValue, key);
+        String fullNamespace = generateFullNamespace(namespace);
+        return RedisKeyGenerator.generate(fullNamespace, key);
     }
 
     private boolean isSuccess(Boolean success) {

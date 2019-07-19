@@ -481,6 +481,12 @@ lock(T namespace, String key, Duration timeout) | 尝试获取锁。如果该锁
 releaseLock(T namespace, String key) | 手动释放锁。在某些场景下，锁可能已获取成功，但后续的业务处理出现异常，需要释放锁来避免资源的占用，此时可以在finally中使用该方法来手机释放锁。
 lockInDuration(T namespace, String key, Duration duration, long concurrent) | 尝试获取锁。该锁表示某个时间段内最多允许n个线程或进程同时获得锁。
 
+`定义全局namespace`
+
+可通过配置`spring.redis.namespace`的值来定义全局namespace，默认值为`tamboot`。
+
+
+
 
 ### tamboot-rocketmq-client
 

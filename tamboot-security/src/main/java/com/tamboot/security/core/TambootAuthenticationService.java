@@ -5,9 +5,8 @@ import com.tamboot.security.config.TambootSecurityProperties;
 import com.tamboot.security.token.TokenPresenterFactory;
 import com.tamboot.security.token.TokenRepositoryFactory;
 import org.springframework.context.ApplicationContext;
-import org.springframework.security.access.intercept.RunAsUserToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.context.SecurityContextImpl;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -44,8 +43,12 @@ public class TambootAuthenticationService {
         }
 
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-        Authentication authentication = new RunAsUserToken(userDetails.getUsername(), userDetails,
-                userDetails.getPassword(), userDetails.getAuthorities(), null);
+
+        TambootUsernamePasswordAuthenticationToken authentication = new TambootUsernamePasswordAuthenticationToken();
+        authentication.setPrincipal(userDetails);
+        authentication.setCredentials(userDetails.getPassword());
+        authentication.setAuthenticated(true);
+        authentication.setAuthorities(userDetails.getAuthorities());
         SecurityContext securityContext = new SecurityContextImpl();
         securityContext.setAuthentication(authentication);
         String token = tokenPresenterFactory.get(request).generate(request, authentication);
@@ -54,9 +57,18 @@ public class TambootAuthenticationService {
         return token;
     }
 
-    public void logout(HttpServletRequest request, HttpServletResponse response) {
+    public final void logout(HttpServletRequest request, HttpServletResponse response) {
         String token = tokenPresenterFactory.get(request).readFromRequest(request);
         tokenPresenterFactory.get(request).delete(request, response);
         tokenRepositoryFactory.get().delete(token);
+    }
+
+    public final void refresh(HttpServletRequest request) {
+        String token = tokenPresenterFactory.get(request).readFromRequest(request);
+        int tokenExpirySeconds = properties.getTokenExpirySeconds();
+        SecurityContext securityContext = SecurityContextHolder.getContext();
+        if (TextUtil.isNotEmpty(token) && securityContext != null && securityContext.getAuthentication() != null) {
+            tokenRepositoryFactory.get().save(token, securityContext, tokenExpirySeconds);
+        }
     }
 }

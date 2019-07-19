@@ -51,7 +51,7 @@ public class TokenSecurityContextRepository implements SecurityContextRepository
             token = tokenPresenterFactory.get(request).readFromRequest(request);
         }
 
-        if (TextUtil.isEmpty(token)) {
+        if (TextUtil.isEmpty(token) || context == null || context.getAuthentication() == null) {
             return;
         }
 
