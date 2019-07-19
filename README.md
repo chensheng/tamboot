@@ -848,10 +848,10 @@ public class TextMessageListener extends MessageListener<TextInboundMessage> {
 ### tamboot-mybatis配置
 参数|说明|类型|默认值
 -----|-----|-----|-----
-mybatis.ignoreInterceptor|是否使用redis来保存登录凭证、访问权限等系统安全有关的数据。默认为false，表示将这些数据保存在本地内存中。|Boolean|false
+mybatis.ignoreInterceptor|是否忽略insert和update的拦截。|Boolean|false
 mybatis.throwVersionLockException|当发生乐观锁错误时，是否抛出异常。默认为false，表示不抛出异常，些时需要根据update语句的返回值判断数据是否更新成功。建议将该项置设为true。|Boolean|false
 mybatis.snowFlake.*|分布式id生成算法的配置||
-mybatis.snowFlake.dataCenterId|数据中心id，从1到1024。当应用要分布式部署时，不同服务器的应用配置不同的值。|Long|
+mybatis.snowFlake.machineId|机器id，从0到1023。当应用要分布式部署时，不同服务器的应用配置不同的值。|Long|
 mybatis.snowFlake.generatorStartTime|id生成器的开始时间的毫秒数，不能大于当前时间，一般采用默认值即可。|Long|1493737860828
 mybatis.configuration.mapUnderscoreToCamelCase|自动将数据库表中带下划线的字段与Model中的驼峰命名的字段对应起来，使用本框架需设为true。|Boolean|false
 mybatis.*|更多的配置可参考[MybatisProperties](https://github.com/mybatis/spring-boot-starter/blob/master/mybatis-spring-boot-autoconfigure/src/main/java/org/mybatis/spring/boot/autoconfigure/MybatisProperties.java)和[mybatis设置](http://www.mybatis.org/mybatis-3/zh/configuration.html#settings)||
