@@ -30,6 +30,7 @@
         <mysql-connector-java.version>8.0.15</mysql-connector-java.version>
         <openfeign.version>10.2.3</openfeign.version>
         <wechatty.version>2.0.0</wechatty.version>
+        <poi.version>4.0.1</poi.version>
     </properties>
 
     <dependencyManagement>
@@ -111,6 +112,21 @@
                 <groupId>space.chensheng.wechatty</groupId>
                 <artifactId>wechatty-mp</artifactId>
                 <version>${wechatty.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.poi</groupId>
+                <artifactId>poi</artifactId>
+                <version>${poi.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.poi</groupId>
+                <artifactId>poi-ooxml</artifactId>
+                <version>${poi.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.poi</groupId>
+                <artifactId>poi-ooxml-schemas</artifactId>
+                <version>${poi.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
