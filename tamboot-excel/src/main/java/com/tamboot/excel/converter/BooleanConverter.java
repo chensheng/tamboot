@@ -11,9 +11,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class BooleanConverter implements Converter {
-    private static final Set<String> TRUE_VALUES = new HashSet<String>(Arrays.asList("TRUE", "YES", "Y", "1", "是"));
+    private static final Set<String> TRUE_VALUES = new HashSet<String>(Arrays.asList("是", "TRUE", "YES", "Y", "1"));
 
-    private static final Set<String> FALSE_VALUES = new HashSet<String>(Arrays.asList("FALSE", "NO", "N", "0", "否"));
+    private static final Set<String> FALSE_VALUES = new HashSet<String>(Arrays.asList("否", "FALSE", "NO", "N", "0"));
 
     @Override
     public boolean support(Field field, CellValueType cellValueType) {

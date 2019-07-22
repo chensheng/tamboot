@@ -1,6 +1,7 @@
 package com.tamboot.excel.converter;
 
 import com.tamboot.excel.core.CellValueType;
+import com.tamboot.excel.core.NumericUtil;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Workbook;
 
@@ -15,7 +16,7 @@ public class StringConverter implements Converter {
 
     @Override
     public Object fromCellContent(String cellContent, Field field, String format, boolean use1904DateWindowing) {
-        return DoubleConverter.doFormatNumericInNeed(cellContent, null);
+        return NumericUtil.formatNumericInNeed(cellContent, null);
     }
 
     @Override
