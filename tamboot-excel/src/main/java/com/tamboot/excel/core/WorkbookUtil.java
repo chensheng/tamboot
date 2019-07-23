@@ -16,7 +16,7 @@ public class WorkbookUtil {
         if (ExcelType.XLS.equals(excelType)) {
             workbook = (templateInputStream == null) ? new HSSFWorkbook() : new HSSFWorkbook(new POIFSFileSystem(templateInputStream));
         } else {
-            workbook = (templateInputStream == null) ? new SXSSFWorkbook(500) : new SXSSFWorkbook(new XSSFWorkbook(templateInputStream));
+            workbook = (templateInputStream == null) ? new SXSSFWorkbook(500) : new SXSSFWorkbook(new XSSFWorkbook(templateInputStream), 500);
         }
         return workbook;
     }
