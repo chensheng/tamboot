@@ -80,6 +80,11 @@
                 <artifactId>tamboot-wechatty</artifactId>
                 <version>${revision}</version>
             </dependency>
+            <dependency>
+                <groupId>com.tamboot</groupId>
+                <artifactId>tamboot-excel</artifactId>
+                <version>${revision}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 

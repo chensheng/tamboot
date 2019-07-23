@@ -32,6 +32,7 @@
         <module>tamboot-rocketmq-client</module>
         <module>tamboot-http</module>
         <module>tamboot-wechatty</module>
+        <module>tamboot-excel</module>
     </modules>
 
 </project>
