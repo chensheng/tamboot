@@ -14,7 +14,7 @@
     <packaging>pom</packaging>
 
     <properties>
-        <revision>${project.parent.version}</revision>
+        <revision>1.0.0-SNAPSHOT</revision>
         <spring-boot.version>2.1.5.RELEASE</spring-boot.version>
         <commons-lang3.version>3.8.1</commons-lang3.version>
         <guava.version>20.0</guava.version>
