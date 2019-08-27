@@ -3,7 +3,6 @@ package com.tamboot.webapp.mybatis;
 import com.tamboot.mybatis.annotation.InsertConfig;
 import com.tamboot.mybatis.id.SnowFlakeIdGeneratorFactory;
 import com.tamboot.mybatis.strategy.SnowFlakeIdInsertStrategy;
-import com.tamboot.security.core.TambootUserDetails;
 import com.tamboot.security.util.SafeSecurityContextHolder;
 import net.sf.jsqlparser.expression.Expression;
 
@@ -19,15 +18,16 @@ public class CreateInfoInsertStrategy extends SnowFlakeIdInsertStrategy {
 
     @Override
     public Map<String, Expression> generateExtraInsertColumns(InsertConfig insertConfig) {
-        TambootUserDetails userDetails = SafeSecurityContextHolder.getUserDetails();
-        if (userDetails == null || userDetails.getUserId() == null) {
-            return null;
-        }
 
         Map<String, Expression> extraColumns = new HashMap<String, Expression>();
-        extraColumns.put("creator", createLongValue(userDetails.getUserId()));
         extraColumns.put("create_time", createTimestamp(new Date()));
         extraColumns.put("version", createLongValue(0l));
+
+        Long userId = SafeSecurityContextHolder.getUserId();
+        if (userId != null) {
+            extraColumns.put("creator", createLongValue(userId));
+        }
+
         return extraColumns;
     }
 

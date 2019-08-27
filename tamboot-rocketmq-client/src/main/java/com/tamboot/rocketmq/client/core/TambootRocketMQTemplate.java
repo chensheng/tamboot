@@ -1,15 +1,20 @@
 package com.tamboot.rocketmq.client.core;
 
+import com.tamboot.common.tools.mapper.JsonMapper;
+import com.tamboot.common.tools.text.TextUtil;
+import com.tamboot.rocketmq.client.config.TambootRocketMQEventProperties;
+import com.tamboot.rocketmq.client.config.TambootRocketMQTxProducerProperties;
+import com.tamboot.rocketmq.client.event.Event;
+import com.tamboot.rocketmq.client.event.EventMessage;
 import org.apache.rocketmq.client.producer.DefaultMQProducer;
 import org.apache.rocketmq.client.producer.SendResult;
 import org.apache.rocketmq.client.producer.TransactionSendResult;
-import org.apache.rocketmq.spring.config.RocketMQConfigUtils;
-import org.apache.rocketmq.spring.core.RocketMQLocalTransactionListener;
 import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessagingException;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.util.Assert;
+import org.springframework.util.ClassUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -17,9 +22,15 @@ import java.util.Collection;
 public class TambootRocketMQTemplate {
     private RocketMQTemplate delegate;
 
-    public TambootRocketMQTemplate(RocketMQTemplate delegate) {
+    private TambootRocketMQEventProperties eventProperties;
+
+    private TambootRocketMQTxProducerProperties txProducerProperties;
+
+    public TambootRocketMQTemplate(RocketMQTemplate delegate, TambootRocketMQEventProperties eventProperties, TambootRocketMQTxProducerProperties txProducerProperties) {
         Assert.notNull(delegate, "[delegate] must not be null");
         this.delegate = delegate;
+        this.eventProperties = eventProperties;
+        this.txProducerProperties = txProducerProperties;
     }
 
     public RocketMQTemplate getDelegate() {
@@ -111,16 +122,48 @@ public class TambootRocketMQTemplate {
      * Send message in Transaction using default txProducerGroup.
      * @param destination destination formats: `topicName:tags`
      * @param msg message {@link org.springframework.messaging.Message}
-     * @param arg ext arg using in {@link RocketMQLocalTransactionListener#executeLocalTransaction(Message, Object)}
-     * @return TransactionSendResult
+     * @param checkParams check parameters using in {@link com.tamboot.rocketmq.client.tx.TransactionMessageChecker#doCheck(Object)}
+     * @return transaction send result
      * @throws MessagingException
      */
-    public TransactionSendResult syncSendInTransaction(String destination, Object msg, Object arg) {
+    public TransactionSendResult syncSendInTransaction(String destination, Object msg, Object checkParams) {
         Assert.notNull(destination, "[destination] must not be null");
         Assert.notNull(msg, "[msg] must not be null");
 
-        Message message = wrapPayloadInNeed(msg);
-        return delegate.sendMessageInTransaction(RocketMQConfigUtils.ROCKETMQ_TRANSACTION_DEFAULT_GLOBAL_NAME, destination, message, arg);
+        String msgType = null;
+        MessageBuilder msgBuilder = null;
+        if (Message.class.isAssignableFrom(msg.getClass())) {
+            Message originalMsg = (Message) msg;
+            msgBuilder = MessageBuilder.fromMessage(originalMsg);
+            msgType = originalMsg.getPayload().getClass().getName();
+        } else {
+            msgBuilder = MessageBuilder.withPayload(msg);
+            msgType = msg.getClass().getName();
+        }
+        msgBuilder.setHeader(MessageHeader.MSG_TYPE, msgType);
+        msgBuilder.setHeader(MessageHeader.CHECK_PARAMS, encodeCheckParams(checkParams));
+        Message message = msgBuilder.build();
+
+        return delegate.sendMessageInTransaction(txProducerProperties.getGroup(), destination, message, null);
+    }
+
+    /**
+     * Send local event in synchronous mode
+     * @param event not null
+     * @return send result
+     */
+    public SendResult syncSendLocalEvent(Event event) {
+        return this.syncSendEvent(eventProperties.getTopic() + ":" + eventProperties.getTag(), event);
+    }
+
+    /**
+     * Send event in synchronous mod
+     * @param destination not null
+     * @param event not null
+     * @return send results
+     */
+    public SendResult syncSendEvent(String destination, Event event) {
+        return this.syncSend(destination, new EventMessage(event));
     }
 
     private Message wrapPayloadInNeed(Object msg) {
@@ -131,5 +174,17 @@ public class TambootRocketMQTemplate {
             message = MessageBuilder.withPayload(msg).build();
         }
         return message;
+    }
+
+    private String encodeCheckParams(Object checkParams) {
+        if (checkParams == null) {
+            return TextUtil.EMPTY_STRING;
+        }
+
+        if (ClassUtils.isPrimitiveOrWrapper(checkParams.getClass()) || String.class == checkParams.getClass()) {
+            return String.valueOf(checkParams);
+        }
+
+        return JsonMapper.nonNullMapper().toJson(checkParams);
     }
 }

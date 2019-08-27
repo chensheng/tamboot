@@ -39,7 +39,6 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.response
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-@Transactional
 @Rollback
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public abstract class TambootDocTest {

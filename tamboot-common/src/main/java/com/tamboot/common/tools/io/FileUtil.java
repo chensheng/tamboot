@@ -4,6 +4,7 @@ import com.tamboot.common.tools.base.Platforms;
 import com.tamboot.common.tools.base.annotation.NotNull;
 import com.tamboot.common.tools.base.annotation.Nullable;
 import com.tamboot.common.tools.text.Charsets;
+import com.tamboot.common.tools.text.TextUtil;
 import org.apache.commons.lang3.Validate;
 
 import java.io.*;
@@ -525,6 +526,9 @@ public class FileUtil {
 	 * @see {@link com.google.common.io.Files#getFileExtension}
 	 */
 	public static String getFileExtension(String fullName) {
+		if (fullName == null) {
+			return TextUtil.EMPTY_STRING;
+		}
 		return com.google.common.io.Files.getFileExtension(fullName);
 	}
 }
