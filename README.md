@@ -1,22 +1,12 @@
 # Tamboot
 Tamboot是一个基于 [Spring Boot](https://spring.io/projects/spring-boot)的JAVA服务端开发框架，封装了服务端开发常用的一些基础模块，开发者可基于此快速构建自己的应用。
 
-[Demo演示地址](http://www.tamboot.com)，详细教程可查看[WIKI](https://github.com/chensheng/tamboot/wiki)。
+* [Demo演示地址](http://www.tamboot.com)
+* [详细教程][https://github.com/chensheng/tamboot/wiki]
+* [模块介绍](#模块介绍)
 
-* [tamboot-common](#tamboot-common)
-* [tamboot-mybatis](#tamboot-mybatis)
-* [tamboot-web](#tamboot-web)
-* [tamboot-security](#tamboot-security)
-* [tamboot-webapp](#tamboot-webapp)
-* [tamboot-job](#tamboot-job)
-* [tamboot-xxljob-client](#tamboot-xxljob-client)
-* [tamboot-restdocs-mockmvc](#tamboot-restdocs-mockmvc)
-* [tamboot-redis](#tamboot-redis)
-* [tamboot-rocketmq-client](#tamboot-rocketmq-client)
-* [tamboot-http](#tamboot-http)
-* [tamboot-wechatty](#tamboot-wechatty)
-* [tamboot-excel](#tamboot-excel)
 
+# 模块介绍
 
 ## tamboot-common
 该模块包含了常用的工具类以及框架的基础接口，其它模块均依赖该模块。
