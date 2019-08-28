@@ -2,7 +2,7 @@
 Tamboot是一个基于 [Spring Boot](https://spring.io/projects/spring-boot)的JAVA服务端开发框架，封装了服务端开发常用的一些基础模块，开发者可基于此快速构建自己的应用。
 
 * [Demo演示地址](http://www.tamboot.com)
-* [详细教程][https://github.com/chensheng/tamboot/wiki]
+* [详细教程](https://github.com/chensheng/tamboot/wiki)
 * [模块介绍](#模块介绍)
 
 
