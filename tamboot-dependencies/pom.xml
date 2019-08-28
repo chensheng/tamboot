@@ -7,31 +7,32 @@
     <parent>
         <groupId>com.tamboot</groupId>
         <artifactId>tamboot-parent</artifactId>
-        <version>1.5.0.RELEASE</version>
+        <version>1.0.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>tamboot-dependencies</artifactId>
     <packaging>pom</packaging>
 
-    <properties>
-        <revision>1.5.0.RELEASE</revision>
-        <spring-boot.version>2.1.5.RELEASE</spring-boot.version>
-        <commons-lang3.version>3.8.1</commons-lang3.version>
-        <guava.version>20.0</guava.version>
-        <dozer.version>5.5.1</dozer.version>
-        <mybatis-spring-boot-starter.version>2.0.1</mybatis-spring-boot-starter.version>
-        <pagehelper.version>5.0.4</pagehelper.version>
-        <servlet-api.version>3.1.0</servlet-api.version>
-        <spring-security-test.version>5.1.5.RELEASE</spring-security-test.version>
-        <rocketmq.version>4.5.1</rocketmq.version>
-        <rocketmq-spring-boot-starter.version>2.0.3</rocketmq-spring-boot-starter.version>
-        <hikaricp.version>3.3.1</hikaricp.version>
-        <xxl-job.version>2.1.0</xxl-job.version>
-        <mysql-connector-java.version>8.0.15</mysql-connector-java.version>
-        <openfeign.version>10.2.3</openfeign.version>
-        <wechatty.version>2.0.0</wechatty.version>
-        <poi.version>4.0.1</poi.version>
-    </properties>
+	<properties>
+		<revision>1.0.0-SNAPSHOT</revision>
+		<spring-boot.version>2.1.5.RELEASE</spring-boot.version>
+		<commons-lang3.version>3.8.1</commons-lang3.version>
+		<guava.version>20.0</guava.version>
+		<dozer.version>5.5.1</dozer.version>
+		<mybatis-spring-boot-starter.version>2.0.1</mybatis-spring-boot-starter.version>
+		<pagehelper.version>5.0.4</pagehelper.version>
+		<servlet-api.version>3.1.0</servlet-api.version>
+		<spring-security-test.version>5.1.5.RELEASE</spring-security-test.version>
+		<rocketmq.version>4.5.1</rocketmq.version>
+		<rocketmq-spring-boot-starter.version>2.0.3</rocketmq-spring-boot-starter.version>
+		<hikaricp.version>3.3.1</hikaricp.version>
+		<xxl-job.version>2.1.0</xxl-job.version>
+		<mysql-connector-java.version>8.0.15</mysql-connector-java.version>
+		<openfeign.version>10.2.3</openfeign.version>
+		<wechatty.version>2.0.0</wechatty.version>
+		<poi.version>4.0.1</poi.version>
+		<google-zxing.version>3.3.3</google-zxing.version>
+	</properties>
 
     <dependencyManagement>
         <dependencies>
@@ -127,6 +128,16 @@
                 <groupId>org.apache.poi</groupId>
                 <artifactId>poi-ooxml-schemas</artifactId>
                 <version>${poi.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.zxing</groupId>
+                <artifactId>core</artifactId>
+                <version>${google-zxing.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.zxing</groupId>
+                <artifactId>javase</artifactId>
+                <version>${google-zxing.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

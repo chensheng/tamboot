@@ -28,13 +28,17 @@ public class AsciidocGenerator {
     private static final String DICTIONARY_DOC_ID = "dictionary";
 
     public static boolean createIndexDoc(WebApplicationContext context, String docPackage, String outputDirectory) {
+        return createIndexDoc(context, docPackage, outputDirectory, null);
+    }
+
+    public static boolean createIndexDoc(WebApplicationContext context, String docPackage, String outputDirectory, String docTitle) {
         if (context == null || TextUtil.isEmpty(docPackage) || TextUtil.isEmpty(outputDirectory)) {
             return false;
         }
 
         String indexDocId = INDEX_DOC_ID;
         String indexDocPath = outputDirectory.concat(File.separator).concat(indexDocId).concat(".adoc");
-        String indexDocText = generateIndexDocText(context, docPackage, outputDirectory);
+        String indexDocText = generateIndexDocText(context, docTitle, docPackage, outputDirectory);
 
         return createDocFile(indexDocPath, indexDocText);
     }
@@ -94,9 +98,13 @@ public class AsciidocGenerator {
         return false;
     }
 
-    private static String generateIndexDocText(WebApplicationContext context, String docPackage, String outputDirectory) {
+    private static String generateIndexDocText(WebApplicationContext context,String docTitle, String docPackage, String outputDirectory) {
+        if (TextUtil.isEmpty(docTitle)) {
+            docTitle = "API 文档";
+        }
+
         StringBuilder docText = new StringBuilder();
-        docText.append("= API 文档").append("\n")
+        docText.append("= ").append(docTitle).append("\n")
                 .append(":doctype: book").append("\n")
                 .append(":icons: font").append("\n")
                 .append(":source-highlighter: highlightjs").append("\n")

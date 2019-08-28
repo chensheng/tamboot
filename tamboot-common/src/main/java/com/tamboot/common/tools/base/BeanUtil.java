@@ -18,9 +18,9 @@ public class BeanUtil extends BeanUtils {
         try {
             doCopyNotNullProperties(dest, orig);
         } catch (InvocationTargetException e) {
-            log.error(ExceptionUtil.stackTraceText(e));
+            log.warn(ExceptionUtil.stackTraceText(e));
         } catch (IllegalAccessException e) {
-            log.error(ExceptionUtil.stackTraceText(e));
+            log.warn(ExceptionUtil.stackTraceText(e));
         }
     }
 
@@ -89,11 +89,11 @@ public class BeanUtil extends BeanUtils {
                     copyProperty(dest, name, value);
                 }
             } catch (NoSuchMethodException e) {
-                log.error(ExceptionUtil.stackTraceText(e));
+                log.warn(ExceptionUtil.stackTraceText(e));
             } catch (IllegalAccessException e) {
-                log.error(ExceptionUtil.stackTraceText(e));
+                log.warn(ExceptionUtil.stackTraceText(e));
             } catch (InvocationTargetException e) {
-                log.error(ExceptionUtil.stackTraceText(e));
+                log.warn(ExceptionUtil.stackTraceText(e));
             }
         }
     }
