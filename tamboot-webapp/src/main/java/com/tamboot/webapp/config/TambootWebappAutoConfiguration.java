@@ -11,6 +11,7 @@ import com.tamboot.webapp.mybatis.ModifyInfoUpdateStrategy;
 import com.tamboot.webapp.security.*;
 import com.tamboot.webapp.web.JsonResponseWriter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -71,11 +72,13 @@ public class TambootWebappAutoConfiguration {
     @ConditionalOnClass(TambootMybatisAutoConfiguration.class)
     public static class TambootWebappMybatisConfiguration {
         @Bean
+        @ConditionalOnMissingBean(InsertStrategy.class)
         public InsertStrategy insertStrategy(SnowFlakeIdGeneratorFactory idFactory) {
             return new CreateInfoInsertStrategy(idFactory);
         }
 
         @Bean
+        @ConditionalOnMissingBean(UpdateStrategy.class)
         public UpdateStrategy updateStrategy() {
             return new ModifyInfoUpdateStrategy();
         }
