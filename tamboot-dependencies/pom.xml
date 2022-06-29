@@ -30,7 +30,7 @@
 		<mysql-connector-java.version>8.0.15</mysql-connector-java.version>
 		<openfeign.version>10.2.3</openfeign.version>
 		<wechatty.version>2.0.0</wechatty.version>
-		<poi.version>4.0.1</poi.version>
+		<poi.version>4.1.1</poi.version>
 		<google-zxing.version>3.3.3</google-zxing.version>
 	</properties>
 
